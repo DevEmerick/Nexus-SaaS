@@ -1056,7 +1056,7 @@ const App = () => {
       )}
 
       {/* Header Principal */}
-      <header className={`border-b px-8 py-5 flex flex-col xl:flex-row justify-between items-center sticky top-0 z-40 gap-4 shadow-sm backdrop-blur-md transition-colors ${theme === 'dark' ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
+      <header className={`border-b px-4 md:px-6 lg:px-8 py-3 md:py-4 lg:py-5 flex flex-col lg:flex-row justify-between items-center sticky top-0 z-40 gap-3 md:gap-4 shadow-sm backdrop-blur-md transition-colors ${theme === 'dark' ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
         <div className="flex flex-col md:flex-row items-center gap-6 xl:gap-10 w-full xl:w-auto">
           
           <div className="relative z-40 w-full md:w-auto flex justify-center">
@@ -1100,21 +1100,21 @@ const App = () => {
             )}
           </div>
           
-          <nav className={`flex p-1.5 rounded-2xl border w-full md:w-auto justify-center transition-colors ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
-            <button onClick={() => setView('board')} className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'board' ? (theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-md' : 'bg-white text-indigo-600 shadow-md') : 'text-slate-500 hover:text-slate-400'}`}><Columns size={16} /> Quadro</button>
-            <button onClick={() => setView('calendar')} className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'calendar' ? (theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-md' : 'bg-white text-indigo-600 shadow-md') : 'text-slate-500 hover:text-slate-400'}`}><CalendarIcon size={16} /> Calendário</button>
-            <button onClick={() => setView('dashboard')} className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'dashboard' ? (theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-md' : 'bg-white text-indigo-600 shadow-md') : 'text-slate-500 hover:text-slate-400'}`}><Activity size={16} /> Estatísticas</button>
-            <div className={`w-[1px] h-6 mx-2 my-auto ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-200'}`} />
-            <button onClick={() => setView('trash')} className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'trash' ? (theme === 'dark' ? 'bg-red-900/40 text-red-400 shadow-md' : 'bg-red-50 text-red-600 shadow-md') : 'text-slate-500 hover:text-red-400'}`}><Trash size={16} /> Lixeira</button>
+          <nav className={`flex p-2 md:p-1.5 rounded-2xl border w-full md:w-auto justify-center gap-1 transition-colors ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
+            <button onClick={() => setView('board')} className={`flex items-center gap-1 md:gap-2 px-3 md:px-6 py-1.5 md:py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'board' ? (theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-md' : 'bg-white text-indigo-600 shadow-md') : 'text-slate-500 hover:text-slate-400'}`}><Columns size={16} /><span className="hidden md:inline">Quadro</span></button>
+            <button onClick={() => setView('calendar')} className={`flex items-center gap-1 md:gap-2 px-3 md:px-6 py-1.5 md:py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'calendar' ? (theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-md' : 'bg-white text-indigo-600 shadow-md') : 'text-slate-500 hover:text-slate-400'}`}><CalendarIcon size={16} /><span className="hidden md:inline">Calendário</span></button>
+            <button onClick={() => setView('dashboard')} className={`flex items-center gap-1 md:gap-2 px-3 md:px-6 py-1.5 md:py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'dashboard' ? (theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-md' : 'bg-white text-indigo-600 shadow-md') : 'text-slate-500 hover:text-slate-400'}`}><Activity size={16} /><span className="hidden md:inline">Estatísticas</span></button>
+            <div className={`w-[1px] h-6 mx-1 md:mx-2 my-auto ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-200'}`} />
+            <button onClick={() => setView('trash')} className={`flex items-center gap-1 md:gap-2 px-3 md:px-6 py-1.5 md:py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${view === 'trash' ? (theme === 'dark' ? 'bg-red-900/40 text-red-400 shadow-md' : 'bg-red-50 text-red-600 shadow-md') : 'text-slate-500 hover:text-red-400'}`}><Trash size={16} /><span className="hidden md:inline">Lixeira</span></button>
           </nav>
         </div>
 
-        <div className="flex items-center gap-4 w-full xl:w-auto justify-end">
-          <button onClick={() => handleOpenModal()} className={`flex items-center gap-2 px-6 py-2.5 rounded-2xl transition-all shadow-md active:scale-95 font-black text-xs uppercase tracking-widest ${theme === 'dark' ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-900/20' : 'bg-slate-900 hover:bg-black text-white shadow-slate-200'}`}>
-            <Plus size={16} strokeWidth={3} /> Novo Card
+        <div className="flex items-center gap-2 md:gap-4 w-full lg:w-auto justify-end">
+          <button onClick={() => handleOpenModal()} className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl transition-all shadow-md active:scale-95 font-black text-xs uppercase tracking-widest ${theme === 'dark' ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-900/20' : 'bg-slate-900 hover:bg-black text-white shadow-slate-200'}`}>
+            <Plus size={16} strokeWidth={3} /><span className="hidden md:inline">Novo Card</span>
           </button>
           
-          <div className={`w-[1px] h-8 mx-2 ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-200'}`} />
+          <div className={`w-[1px] h-6 md:h-8 mx-1 md:mx-2 ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-200'}`} />
 
           {/* Botó de Cerca Global */}
           <div className="relative z-40">
@@ -1199,11 +1199,11 @@ const App = () => {
         </div>
       </header>
 
-      <main className="p-8 max-w-[1600px] mx-auto min-h-[calc(100vh-100px)] animate-in fade-in duration-500 flex flex-col">
+      <main className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto min-h-[calc(100vh-100px)] animate-in fade-in duration-500 flex flex-col">
         
         {view === 'board' && activeWorkspace && (
           <>
-            <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 rounded-[2rem] border shadow-sm transition-colors ${theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
+            <div className={`mb-4 md:mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4 p-3 md:p-4 lg:p-6 rounded-[2rem] border shadow-sm transition-colors ${theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
               <div className="flex items-center gap-3">
                 <Filter size={18} className={theme === 'dark' ? 'text-slate-500' : 'text-slate-400'} />
                 <div className="flex gap-2 flex-wrap">
@@ -1220,7 +1220,7 @@ const App = () => {
             </div>
             
             {(activeWorkspace.tags?.length > 0 || activeWorkspace.members?.length > 0) && (
-              <div className={`mb-8 p-5 rounded-[2rem] border shadow-sm transition-colors flex flex-col gap-4 ${theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
+              <div className={`mb-4 md:mb-8 p-3 md:p-4 lg:p-6 rounded-[2rem] border shadow-sm transition-colors flex flex-col gap-3 md:gap-4 ${theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
                 
                 {/* Linha de Etiquetas */}
                 {activeWorkspace.tags && activeWorkspace.tags.length > 0 && (
@@ -1276,7 +1276,7 @@ const App = () => {
               </div>
             )}
 
-            <div className="flex gap-8 items-start overflow-x-auto pb-8 custom-scrollbar">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-8 md:items-start md:overflow-x-auto pb-4 md:pb-8 custom-scrollbar">
               {activeWorkspace.columns.map(column => {
                 const colColorInfo = PALETTE[column.color || 'slate'];
                 
@@ -1288,7 +1288,7 @@ const App = () => {
                   onDragEnd={handleColumnDragEnd}
                   onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
                   onDrop={(e) => handleColumnDrop(e, column.id)} 
-                  className={`flex flex-col rounded-[2.5rem] border p-5 min-h-[500px] max-h-[2500px] w-full md:w-[380px] flex-shrink-0 transition-all ${theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-200/40 border-slate-200/60'} ${draggedColumnId === column.id ? 'opacity-40 scale-[0.98]' : ''}`}
+                  className={`flex flex-col rounded-[2.5rem] border p-3 md:p-4 lg:p-5 min-h-[300px] md:min-h-[500px] max-h-[2500px] w-full md:w-[380px] md:flex-shrink-0 transition-all ${theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-200/40 border-slate-200/60'} ${draggedColumnId === column.id ? 'opacity-40 scale-[0.98]' : ''}`}
                 >
                   <div className={`px-4 py-3 flex justify-between items-center mb-6 relative rounded-2xl transition-colors ${draggedColumnId ? (theme === 'dark' ? 'bg-slate-800' : 'bg-white') : ''}`}>
                     <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -1358,7 +1358,7 @@ const App = () => {
                     </div>
                   </div>
 
-                  <div className="flex-1 space-y-5 overflow-y-auto custom-scrollbar pr-2">
+                  <div className="flex-1 space-y-3 md:space-y-4 lg:space-y-5 overflow-y-auto custom-scrollbar pr-2">
                     {processedTasks.filter(t => t.status === column.id).map(task => {
                       const priorityStyles = getPriorityStyles(task.priority);
                       const isOverdue = checkIsOverdue(task.deadline) && task.status !== 'done';
@@ -1366,7 +1366,7 @@ const App = () => {
                       
                       return (
                         <div key={task.id} draggable="true" onDragStart={(e) => handleDragStart(e, task.id)} onDragEnd={handleDragEnd} onClick={() => handleOpenModal(task)} 
-                          className={`group p-6 rounded-[2rem] shadow-sm border transition-all cursor-grab active:cursor-grabbing relative overflow-hidden transform-gpu flex-shrink-0
+                          className={`group p-3 md:p-4 lg:p-6 rounded-[2rem] shadow-sm border transition-all cursor-grab active:cursor-grabbing relative overflow-hidden transform-gpu flex-shrink-0
                             ${isOverdue ? (theme === 'dark' ? 'bg-slate-800 border-red-900/50 hover:border-red-500 shadow-red-900/10' : 'bg-white border-red-200 hover:border-red-400 shadow-red-100') 
                                         : `${cardColorInfo.soft} ${cardColorInfo.border} hover:border-indigo-400 shadow-sm`}`}
                         >
@@ -1880,7 +1880,7 @@ const App = () => {
                   <input autoFocus required type="text" value={taskForm.title} onChange={e => setTaskForm({...taskForm, title: e.target.value})} className={`w-full px-6 py-4 rounded-[1rem] border-2 focus:outline-none transition-all font-bold text-lg shadow-inner ${theme === 'dark' ? 'bg-slate-800 border-slate-700 focus:border-indigo-500 text-slate-100' : 'bg-slate-50/50 border-slate-100 focus:border-indigo-500 text-slate-800'}`} placeholder="Ex: Machine Learning" />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="space-y-3">
                     <label className={`text-[10px] font-black uppercase tracking-widest ml-1 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>Prazo Final</label>
                     <input type="date" required value={taskForm.deadline} onChange={e => setTaskForm({...taskForm, deadline: e.target.value})} className={`w-full px-6 py-4 rounded-[1rem] border-2 focus:outline-none font-bold ${theme === 'dark' ? 'bg-slate-800 border-slate-700 focus:border-indigo-500 text-slate-100' : 'bg-slate-50/50 border-slate-100 focus:border-indigo-500 text-slate-800'}`} />
@@ -1895,7 +1895,7 @@ const App = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="space-y-3">
                     <label className={`text-[10px] font-black uppercase tracking-widest ml-1 flex items-center gap-1 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
                       <Users size={12} /> Responsáveis
@@ -1939,7 +1939,7 @@ const App = () => {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="space-y-3">
                     <label className={`text-[10px] font-black uppercase tracking-widest ml-1 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>Progresso</label>
                     <select value={taskForm.status} onChange={e => setTaskForm({...taskForm, status: e.target.value})} className={`w-full px-6 py-4 rounded-[1rem] border-2 focus:outline-none font-bold appearance-none cursor-pointer shadow-sm ${theme === 'dark' ? 'bg-slate-800 border-slate-700 focus:border-indigo-500 text-slate-100' : 'bg-white border-slate-100 focus:border-indigo-500 text-slate-800'}`}>
