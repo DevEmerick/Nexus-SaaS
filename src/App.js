@@ -206,7 +206,14 @@ const App = () => {
   const [tasks, setTasks] = useState(() => JSON.parse(localStorage.getItem('nexus_kanban_tasks')) || []);
   
   const [view, setView] = useState('board');
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => {
+    const currentUser = JSON.parse(localStorage.getItem('nexus_current_user'));
+    if (currentUser?.themePreference) return currentUser.themePreference;
+    const savedTheme = localStorage.getItem('nexus_theme');
+    if (savedTheme) return savedTheme;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return 'light';
+  });
   const [currentDate, setCurrentDate] = useState(new Date());
   
   // Modais e Menus
@@ -455,20 +462,29 @@ const App = () => {
       if (authForm.password !== authForm.confirmPassword) return setAuthError('As senhas não coincidem.');
       if (users.find(u => u.email === authForm.email)) return setAuthError('Este email já está em uso.');
       
-      const newUser = { id: generateId(), name: authForm.name, email: authForm.email, password: authForm.password, phone: '', avatar: '' };
+      const newUser = { id: generateId(), name: authForm.name, email: authForm.email, password: authForm.password, phone: '', avatar: '', themePreference: 'light' };
       setUsers([...users, newUser]);
       setCurrentUser(newUser);
       // Migra workspaces sem dono e coloca como admin
       setWorkspaces(prev => prev.map(w => !w.userId ? { ...w, userId: newUser.id, members: [{ userId: newUser.id, role: 'admin' }] } : w));
     } else if (authView === 'login') {
       const user = users.find(u => u.email === authForm.email && u.password === authForm.password);
-      if (user) setCurrentUser(user);
-      else setAuthError('Email ou senha incorretos.');
+      if (user) {
+        setCurrentUser(user);
+        setTheme(user.themePreference || 'light');
+      } else setAuthError('Email ou senha incorretos.');
     } else if (authView === 'forgot') {
       setAppAlert(`Um link de recuperação foi enviado para ${authForm.email}`);
       setAuthView('login');
     }
   };
+
+  // Carregar tema do perfil quando usuario faz login
+  useEffect(() => {
+    if (currentUser?.themePreference) {
+      setTheme(currentUser.themePreference);
+    }
+  }, [currentUser?.id]);
 
   const handleLogout = () => {
     setCurrentUser(null);
@@ -980,7 +996,11 @@ const App = () => {
   if (!currentUser) {
     return (
       <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 font-sans ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
-        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="absolute top-6 right-6 p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+        <button onClick={() => {
+          const newTheme = theme === 'light' ? 'dark' : 'light';
+          setTheme(newTheme);
+          localStorage.setItem('nexus_theme', newTheme);
+        }} className="absolute top-6 right-6 p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
@@ -1182,7 +1202,15 @@ const App = () => {
                 <div className="p-2 space-y-1">
                   <div className={`px-4 py-3 flex items-center justify-between border-b mb-1 ${theme === 'dark' ? 'border-slate-700' : 'border-slate-100'}`}>
                     <span className="text-xs font-black uppercase tracking-widest text-slate-500">Tema</span>
-                    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className={`p-2 rounded-xl border transition-all active:scale-95 ${theme === 'dark' ? 'bg-slate-900 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                    <button onClick={() => {
+                      const newTheme = theme === 'light' ? 'dark' : 'light';
+                      setTheme(newTheme);
+                      if (currentUser) {
+                        const updatedUser = { ...currentUser, themePreference: newTheme };
+                        setCurrentUser(updatedUser);
+                        localStorage.setItem('nexus_current_user', JSON.stringify(updatedUser));
+                      }
+                    }} className={`p-2 rounded-xl border transition-all active:scale-95 ${theme === 'dark' ? 'bg-slate-900 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
                       {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
                     </button>
                   </div>
