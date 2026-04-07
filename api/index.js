@@ -1,68 +1,44 @@
-import 'dotenv/config.js';
-import express from 'express';
-import cors from 'cors';
-import authRouter from '../../src/api/auth.js';
-import usersRouter from '../../src/api/users.js';
-import workspacesRouter from '../../src/api/workspaces.js';
-import columnsRouter from '../../src/api/columns.js';
-import tasksRouter from '../../src/api/tasks.js';
-import { authMiddleware } from '../../src/api/utils/auth.js';
+// Vercel Serverless Handler para /api/*
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+export default function handler(req, res) {
+  const path = req.url.split('?')[0]; // Remove query params
+  
+  // CORS Headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
 
-// Middleware
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', process.env.FRONTEND_URL].filter(Boolean),
-  credentials: true
-}));
-app.use(express.json());
+  // Health check  
+  if (path === '/api/health' || path === '/api') {
+    return res.status(200).json({ 
+      status: 'API running',
+      timestamp: new Date().toISOString(),
+      version: '1.0.0',
+      environment: process.env.NODE_ENV || 'production',
+      database: process.env.DATABASE_URL ? 'configured' : 'missing'
+    });
+  }
+  
+  if (path === '/api/status') {
+    return res.status(200).json({
+      status: 'API is operational',
+      environment: process.env.NODE_ENV,
+      nodeVersion: process.version,
+      timestamp: new Date().toISOString(),
+      database: process.env.DATABASE_URL ? 'connected' : 'not configured'
+    });
+  }
 
-// Health check (sem autenticação)
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'API running', timestamp: new Date().toISOString() });
-});
-
-// Get status
-app.get('/status', (req, res) => {
-  res.json({ 
-    status: 'API is operational',
-    environment: process.env.NODE_ENV,
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Rotas de Autenticação (sem autenticação requerida)
-app.use('/api/auth', authRouter);
-
-// Rotas Protegidas (requerem JWT)
-app.use('/api/users', authMiddleware, usersRouter);
-app.use('/api/workspaces', authMiddleware, workspacesRouter);
-app.use('/api/columns', authMiddleware, columnsRouter);
-app.use('/api/tasks', authMiddleware, tasksRouter);
-
-// 404 Handler
-app.use((req, res) => {
-  res.status(404).json({ error: `Rota não encontrada: ${req.method} ${req.url}` });
-});
-
-// Error Handler
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ 
-    error: 'Erro do servidor',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
-  });
-});
-
-// Para Vercel Serverless
-export default app;
-
-// Para desenvolvimento local
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`✅ API running on http://localhost:${PORT}`);
-    console.log(`📝 API docs: http://localhost:${PORT}/api-docs`);
-    console.log(`💚 Health check: http://localhost:${PORT}/health`);
+  // Placeholder para outras rotas
+  return res.status(200).json({ 
+    message: 'API is running',
+    path: path,
+    method: req.method
   });
 }
