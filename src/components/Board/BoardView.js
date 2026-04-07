@@ -2,6 +2,7 @@ import { Filter, Plus, ListTodo, MessageSquare, Paperclip, Clock, CheckCircle2, 
 import { PALETTE, COLOR_KEYS } from '../../utils/constants';
 import { checkIsOverdue } from '../../utils/validation';
 import { getPriorityStyles } from '../../utils/styles';
+import { getColorNameFromHex } from '../../utils/colorMapper';
 
 const BoardView = ({
   theme,
@@ -141,9 +142,9 @@ const BoardView = ({
                 )}
                 <div className={`relative ${editingColumnId === column.id ? 'z-50' : 'z-20'}`}>
                   {isCurrentUserAdmin ? (
-                    <button onClick={(e) => { e.stopPropagation(); setEditingColumnId(editingColumnId === column.id ? null : column.id); }} className={`w-4 h-4 rounded-full ${PALETTE[column.color || 'indigo'].dot} shadow-sm ring-2 ring-offset-2 transition-all hover:scale-110 flex-shrink-0 ${theme === 'dark' ? 'ring-slate-800 ring-offset-slate-900' : 'ring-white ring-offset-slate-200'}`} title="Mudar cor da coluna" />
+                    <button onClick={(e) => { e.stopPropagation(); setEditingColumnId(editingColumnId === column.id ? null : column.id); }} className={`w-4 h-4 rounded-full ${PALETTE[getColorNameFromHex(column.color)].dot} shadow-sm ring-2 ring-offset-2 transition-all hover:scale-110 flex-shrink-0 ${theme === 'dark' ? 'ring-slate-800 ring-offset-slate-900' : 'ring-white ring-offset-slate-200'}`} title="Mudar cor da coluna" />
                   ) : (
-                    <div className={`w-4 h-4 rounded-full ${PALETTE[column.color || 'indigo'].dot} shadow-sm flex-shrink-0`} />
+                    <div className={`w-4 h-4 rounded-full ${PALETTE[getColorNameFromHex(column.color)].dot} shadow-sm flex-shrink-0`} />
                   )}
                   {editingColumnId === column.id && isCurrentUserAdmin && (
                     <div className={`absolute top-full left-0 mt-2 p-2 rounded-2xl shadow-xl flex gap-2 border animate-in zoom-in z-50 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
@@ -205,7 +206,7 @@ const BoardView = ({
               {processedTasks.filter(t => t.status === column.id).map(task => {
                 const priorityStyles = getPriorityStyles(task.priority);
                 const isOverdue = checkIsOverdue(task.deadline) && task.status !== 'done';
-                const cardColorInfo = PALETTE[task.cardColor || 'slate'];
+                const cardColorInfo = PALETTE[getColorNameFromSimple(task.cardColor)];
                 
                 return (
                   <div key={task.id} draggable="true" onDragStart={(e) => handleDragStart(e, task.id)} onDragEnd={handleDragEnd} onClick={() => handleOpenModal(task)} 
