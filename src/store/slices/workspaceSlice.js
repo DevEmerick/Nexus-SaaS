@@ -49,6 +49,9 @@ const workspaceSlice = createSlice({
     setEditingWorkspaceForm: (state, action) => {
       state.editingWorkspaceForm = action.payload;
     },
+    setEditingWorkspaceModal: (state, action) => {
+      state.isEditWorkspaceModalOpen = action.payload;
+    },
     setIsNewWorkspaceModalOpen: (state, action) => {
       state.isNewWorkspaceModalOpen = action.payload;
     },
@@ -73,6 +76,7 @@ export const {
   setNewWorkspaceTitle,
   setNewWorkspaceColor,
   setEditingWorkspaceForm,
+  setEditingWorkspaceModal,
   setIsNewWorkspaceModalOpen,
   setIsEditWorkspaceModalOpen,
   setDeleteConfirmation,

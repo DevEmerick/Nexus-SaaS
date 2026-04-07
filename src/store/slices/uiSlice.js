@@ -9,6 +9,8 @@ const initialState = {
   editingColumnId: null,
   selectedTags: [],
   selectedAssignees: [],
+  selectedFilter: null,
+  filteredByTag: null,
   showCompleted: true,
   searchQuery: '',
   currentView: 'board',
@@ -103,6 +105,15 @@ const uiSlice = createSlice({
     },
     setIsMemberListModalOpen: (state, action) => {
       state.isMemberListModalOpen = action.payload;
+    },
+    setSelectedFilter: (state, action) => {
+      state.selectedFilter = action.payload;
+    },
+    setTasksFilteredByTag: (state, action) => {
+      state.filteredByTag = action.payload;
+    },
+    updateColumnOrder: (state, action) => {
+      // Column order update logic
     }
   }
 });
@@ -129,7 +140,10 @@ export const {
   setIsDeleteWorkspaceModalOpen,
   setIsAddMemberModalOpen,
   setIsDeleteAccountModalOpen,
-  setIsMemberListModalOpen
+  setIsMemberListModalOpen,
+  setSelectedFilter,
+  setTasksFilteredByTag,
+  updateColumnOrder
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

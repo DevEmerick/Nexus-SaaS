@@ -45,6 +45,9 @@ const taskSlice = createSlice({
     updateTaskForm: (state, action) => {
       state.taskForm = { ...state.taskForm, ...action.payload };
     },
+    setTaskForm: (state, action) => {
+      state.taskForm = action.payload;
+    },
     resetTaskForm: (state) => {
       state.taskForm = initialState.taskForm;
       state.editingTaskId = null;
@@ -65,6 +68,7 @@ export const {
   setTasks,
   setEditingTaskId,
   updateTaskForm,
+  setTaskForm,
   resetTaskForm,
   setSubtaskInput,
   setIsModalOpen
