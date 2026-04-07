@@ -191,24 +191,7 @@ const App = () => {
     }
   }, [currentUser, apiIntegration]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('nexus_kanban_tasks');
-    if (saved) {
-      try { 
-        let parsedTasks = JSON.parse(saved);
-        parsedTasks = parsedTasks.map(t => ({ 
-          ...t, workspaceId: t.workspaceId || 'default', cardColor: t.cardColor || 'slate',
-          history: t.history || [], assignees: t.assignees || [], tagIds: t.tagIds || []
-        }));
-        const now = new Date().getTime();
-        const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
-        const validTasks = parsedTasks.filter(t => !t.deletedAt || (now - new Date(t.deletedAt).getTime()) < thirtyDaysMs);
-        setTasks(validTasks); 
-      } catch (e) {}
-    }
-  }, []);
-
-  // Tasks e Workspaces agora vêm apenas da API, não são salvos em localStorage
+  // Tasks e Workspaces agora vêm apenas da API, não são mais lidos ou salvos em localStorage
 
   // Efecte per l'accés directe de la Cerca Global (Ctrl+K o Cmd+K)
   useEffect(() => {
