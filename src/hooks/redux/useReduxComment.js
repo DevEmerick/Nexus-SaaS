@@ -6,7 +6,6 @@ export const useReduxComment = () => {
   const dispatch = useDispatch();
   const { tasks } = useSelector(state => state.task);
   const { currentUser } = useSelector(state => state.auth);
-  const { activeWorkspaceId } = useSelector(state => state.workspace);
 
   const handleAddComment = (taskId, text, file = null) => {
     const task = tasks.find(t => t.id === taskId);

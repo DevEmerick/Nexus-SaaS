@@ -2,8 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   setDraggedTaskId,
   setDraggedColumnId,
-  updateColumnOrder,
-  setSelectedFilter,
   setTasksFilteredByTag,
 } from '../../store/slices/uiSlice';
 import { DEFAULT_COLUMNS } from '../../utils/constants';
