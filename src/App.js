@@ -10,7 +10,7 @@ import AuthForm from './components/Auth/AuthForm';
 import AppHeader from './components/Header/AppHeader';
 import BoardView from './components/Board/BoardView';
 import ModalsContainer from './components/Modals/ModalsContainer';
-import { useWorkspaceActions, useTaskActions, useAuthActions, useBoardActions, useCommentActions, useUtilityFunctions } from './hooks';
+import { useWorkspaceActions, useTaskActions, useAuthActions, useBoardActions, useCommentActions, useUtilityFunctions, useAPIIntegration } from './hooks';
 
 const App = () => {
   // --- Estados de Autenticação & Usuários ---
@@ -163,6 +163,34 @@ const App = () => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
+  // --- Sincronizar com API quando usuário faz login ---
+  const apiIntegration = useAPIIntegration();
+  
+  useEffect(() => {
+    if (currentUser) {
+      // Carregar workspaces da API
+      const loadAPIData = async () => {
+        try {
+          const apiWorkspaces = await apiIntegration.fetchWorkspaces();
+          if (apiWorkspaces && apiWorkspaces.length > 0) {
+            // Sincronizar workspaces da API com o estado local
+            setWorkspaces(apiWorkspaces);
+            
+            // Carregar tasks
+            const apiTasks = await apiIntegration.fetchTasks();
+            if (apiTasks && apiTasks.length > 0) {
+              setTasks(apiTasks);
+            }
+          }
+        } catch (error) {
+          console.warn('Failed to sync with API, using local data:', error);
+        }
+      };
+      
+      loadAPIData();
+    }
+  }, [currentUser]);
+
   useEffect(() => {
     const saved = localStorage.getItem('nexus_kanban_tasks');
     if (saved) {
@@ -292,12 +320,18 @@ const App = () => {
   };
 
   // --- Initialize Auth Hook ---
+  const handleLoginSuccess = (user) => {
+    // Callback executado após login bem-sucedido
+    // O useEffect que observa currentUser vai disparar automaticamente
+  };
+
   const { handleAuthSubmit, handleLogout, saveProfile } = useAuthActions(
     users, setUsers,
     currentUser, setCurrentUser,
     authForm, setAuthForm,
     authError, setAuthError,
-    authView, setAuthView
+    authView, setAuthView,
+    handleLoginSuccess
   );
 
   // Carregar tema do perfil quando usuario faz login

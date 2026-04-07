@@ -7,22 +7,30 @@ async function seedDatabase() {
   console.log('🌱 Populando banco de dados...\n');
   
   try {
-    // 1. Criar usuário
-    console.log('👤 Criando usuário...');
-    const hashedPassword = await bcrypt.hash('emerick', 10);
-    const user = await prisma.user.create({
-      data: {
-        email: 'emerick@gmail.com',
-        name: 'Emerick',
-        password: hashedPassword,
-        phone: '(11) 99999-9999',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emerick',
-        themePreference: 'dark',
-      },
+    // 1. Buscar ou criar usuário emerick
+    console.log('👤 Verificando/Criando usuário...');
+    let user = await prisma.user.findUnique({
+      where: { email: 'emerick@gmail.com' },
     });
-    console.log(`✓ Usuário criado: ${user.name} (${user.email})\n`);
 
-    // 2. Criar Workspace
+    if (user) {
+      console.log(`✓ Usuário existente: ${user.name} (${user.email})\n`);
+    } else {
+      const hashedPassword = await bcrypt.hash('emerick', 10);
+      user = await prisma.user.create({
+        data: {
+          email: 'emerick@gmail.com',
+          name: 'Emerick',
+          password: hashedPassword,
+          phone: '(11) 99999-9999',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emerick',
+          themePreference: 'dark',
+        },
+      });
+      console.log(`✓ Novo usuário criado: ${user.name} (${user.email})\n`);
+    }
+
+    // 2. Criar Workspace pra esse usuário
     console.log('📊 Criando workspace...');
     const workspace = await prisma.workspace.create({
       data: {

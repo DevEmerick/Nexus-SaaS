@@ -1,11 +1,14 @@
 import { generateId } from '../utils/helpers';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://nexus-saas-git-preview-devemericks-projects.vercel.app';
+
 export const useAuthActions = (
   users, setUsers,
   currentUser, setCurrentUser,
   authForm, setAuthForm,
   authError, setAuthError,
-  authView, setAuthView
+  authView, setAuthView,
+  onLoginSuccess = null // Callback quando login é bem-sucedido
 ) => {
 
   const saveProfile = (e) => {
@@ -32,11 +35,44 @@ export const useAuthActions = (
     setAuthError('');
   };
 
-  const handleAuthSubmit = (e) => {
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
 
     if (authView === 'login') {
+      try {
+        // Tentar login via API
+        const response = await fetch(`${API_BASE_URL}/api/auth`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            action: 'login',
+            email: authForm.email, 
+            password: authForm.password 
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const apiUser = data.user || data.data;
+          setCurrentUser(apiUser);
+          setUsers(prev => {
+            const exists = prev.some(u => u.id === apiUser.id);
+            return exists ? prev : [...prev, apiUser];
+          });
+          setAuthForm({ name: '', email: '', password: '', confirmPassword: '' });
+          
+          // Chamar callback para carregar workspaces
+          if (onLoginSuccess) {
+            onLoginSuccess(apiUser);
+          }
+          return;
+        }
+      } catch (error) {
+        console.warn('API login failed, falling back to localStorage:', error);
+      }
+
+      // Fallback: verificar no localStorage
       const user = users.find(u => u.email === authForm.email && u.password === authForm.password);
       if (!user) {
         setAuthError('E-mail ou senha incorretos');
@@ -44,6 +80,10 @@ export const useAuthActions = (
       }
       setCurrentUser(user);
       setAuthForm({ name: '', email: '', password: '', confirmPassword: '' });
+      
+      if (onLoginSuccess) {
+        onLoginSuccess(user);
+      }
     } else {
       // Registro
       if (authForm.password !== authForm.confirmPassword) {
@@ -61,6 +101,36 @@ export const useAuthActions = (
         return;
       }
 
+      try {
+        // Tentar register via API
+        const response = await fetch(`${API_BASE_URL}/api/auth`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'register',
+            email: authForm.email,
+            name: authForm.name || authForm.email.split('@')[0],
+            password: authForm.password
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const apiUser = data.user || data.data;
+          setCurrentUser(apiUser);
+          setUsers(prev => [...prev, apiUser]);
+          setAuthForm({ name: '', email: '', password: '', confirmPassword: '' });
+          
+          if (onLoginSuccess) {
+            onLoginSuccess(apiUser);
+          }
+          return;
+        }
+      } catch (error) {
+        console.warn('API register failed, falling back to localStorage:', error);
+      }
+
+      // Fallback: verificar no localStorage
       if (users.some(u => u.email === authForm.email)) {
         setAuthError('E-mail já registrado');
         return;
@@ -79,6 +149,10 @@ export const useAuthActions = (
       setUsers(prev => [...prev, newUser]);
       setCurrentUser(newUser);
       setAuthForm({ name: '', email: '', password: '', confirmPassword: '' });
+      
+      if (onLoginSuccess) {
+        onLoginSuccess(newUser);
+      }
     }
   };
 
