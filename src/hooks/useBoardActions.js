@@ -51,7 +51,7 @@ export const useBoardActions = (
     try {
       // Atualizar no banco via API
       const response = await fetch(`${typeof window !== 'undefined' ? window.location.origin : ''}/api/update`, {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: 'task',
