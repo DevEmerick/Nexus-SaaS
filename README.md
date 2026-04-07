@@ -264,9 +264,9 @@ Nexus SaaS includes a comprehensive color palette:
 - [x] **Phase 16**: Redux hooks layer created (5 custom hooks for state management)
 
 ### In Progress 🔄
-- [ ] Integrating Redux hooks into App.js
+- [ ] Full Redux integration in App.js (complex refactor ahead)
 - [ ] Eliminating prop drilling with Redux
-- [ ] Connecting custom hooks to Redux slices
+- [ ] Component-level Redux adoption
 
 ### Planned 📋
 - [ ] Backend API with Node.js/Express
