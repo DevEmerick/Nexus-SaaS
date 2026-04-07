@@ -49,6 +49,11 @@ A modern, feature-rich task management and productivity platform built with Reac
 - **Autoprefixer** - CSS vendor prefix automation
 - **PostCSS** - CSS transformation framework
 
+### State Management
+- **Redux** - Predictable state management with Redux DevTools
+- **React-Redux** - Official Redux React bindings
+- **Redux Thunk** - Middleware for async operations
+
 ### Testing
 - **React Testing Library** - Component testing utilities
 - **Jest** - Testing framework (via react-scripts)
@@ -108,21 +113,54 @@ npm test -- --coverage
 
 ```
 nexus-saas/
-├── public/                 # Static assets
-│   ├── index.html         # Main HTML file
-│   └── manifest.json      # PWA manifest
-├── src/                   # Source code
-│   ├── App.js            # Main application component
-│   ├── App.test.js       # App component tests
-│   ├── index.js          # React entry point
-│   ├── index.css         # Global styles
-│   ├── setupTests.js     # Test configuration
-│   └── reportWebVitals.js # Performance monitoring
-├── build/                # Production build output
-├── package.json          # Project dependencies
-├── tailwind.config.js    # Tailwind CSS configuration
-├── postcss.config.js     # PostCSS configuration
-└── README.md            # This file
+├── public/                      # Static assets
+│   ├── index.html              # Main HTML file
+│   └── manifest.json           # PWA manifest
+├── src/                        # Source code
+│   ├── App.js                 # Main application component
+│   ├── App.test.js            # App component tests
+│   ├── index.js               # React entry point
+│   ├── index.css              # Global styles
+│   ├── setupTests.js          # Test configuration
+│   ├── reportWebVitals.js     # Performance monitoring
+│   ├── components/            # React components
+│   │   ├── Auth/              # Authentication components
+│   │   ├── Board/             # Kanban board components
+│   │   ├── Calendar/          # Calendar view components
+│   │   ├── Dashboard/         # Analytics dashboard
+│   │   ├── Header/            # Navigation header
+│   │   ├── Modals/            # Modal dialogs
+│   │   ├── Shared/            # Shared components
+│   │   └── Trash/             # Deleted items management
+│   ├── hooks/                 # Custom React hooks
+│   │   ├── useAuthActions.js
+│   │   ├── useWorkspaceActions.js
+│   │   ├── useTaskActions.js
+│   │   ├── useBoardActions.js
+│   │   ├── useCommentActions.js
+│   │   ├── useUtilityFunctions.js
+│   │   ├── __tests__/         # Hook tests
+│   │   └── index.js           # Hooks barrel export
+│   ├── store/                 # Redux store configuration
+│   │   ├── index.js           # Store configuration
+│   │   ├── slices/            # Redux slices
+│   │   │   ├── authSlice.js
+│   │   │   ├── workspaceSlice.js
+│   │   │   ├── taskSlice.js
+│   │   │   ├── uiSlice.js
+│   │   │   └── notificationSlice.js
+│   │   └── middleware/        # Redux middleware
+│   ├── utils/                 # Utility functions and constants
+│   │   ├── helpers.js
+│   │   ├── constants.js
+│   │   ├── styles.js
+│   │   └── validation.js
+│   └── features/              # Feature-specific code (legacy)
+├── build/                     # Production build output
+├── package.json              # Project dependencies
+├── tailwind.config.js        # Tailwind CSS configuration
+├── postcss.config.js         # PostCSS configuration
+└── README.md                # This file
 ```
 
 ## 🎨 Color System
@@ -141,9 +179,31 @@ Nexus SaaS includes a comprehensive color palette:
 
 ## 🤖 AI Integration
 
-### Gemini API Features
-- **Task Suggestions** - Get AI-powered suggestions for task completion
-- **Priority Analysis** - Automatic task prioritization
+###🏗️ Architecture
+
+### Code Organization
+- **Component-Driven**: Modular components with clear responsibilities
+- **Custom Hooks**: 6 specialized hooks for business logic
+  - `useAuthActions` - Authentication and profile management
+  - `useWorkspaceActions` - Workspace CRUD operations
+  - `useTaskActions` - Task management and history
+  - `useBoardActions` - Drag-drop and column management
+  - `useCommentActions` - Comments, replies, and file uploads
+  - `useUtilityFunctions` - Utility functions (history, metrics, user lookup)
+- **Redux State Management**: Centralized state with DevTools support
+- **Test Coverage**: Comprehensive Jest + RTL test suite (20+ tests)
+
+### Key Metrics
+- **App.js Size**: 460 lines (-83% from original 2,700)
+- **Total Hook Code**: 691 lines (reusable, testable)
+- **Custom Hooks**: 6 specialized hooks
+- **Components**: 8 major components
+- **Test Suites**: 6 (59% pass rate at baseline)
+
+## 📊 Performance
+
+- **Bundle Size**: ~90KB (gzipped) with Redux
+- **Redux Bundle**: +40KB (professional state managementic task prioritization
 - **Subtask Generation** - Let AI break down complex tasks
 - **Content Enhancement** - Edit and improve task descriptions
 
@@ -179,23 +239,31 @@ Nexus SaaS includes a comprehensive color palette:
 - **Bundle Size**: ~90KB (gzipped)
 - **CSS Size**: ~8KB (gzipped)
 - **Initial Load**: < 2 seconds on 4G
-- **Lighthouse Scores**: 95+ Performance, 90+ Accessibility
+- *🎯 Development Progress
 
-## 🌐 Deployment
+### Completed ✅
+- [x] **Phase 1-8**: Component extraction and refactoring (2,700 → 860 lines)
+- [x] **Phase 9**: Integrated 3 core hooks (App.js 860 → 544 lines)
+- [x] **Phase 10**: Board actions hook (App.js 544 → 486 lines)
+- [x] **Phase 11**: Comment actions hook (App.js 486 → 475 lines)
+- [x] **Phase 12**: Import cleanup (38 warnings → 0)
+- [x] **Phase 13**: Utility functions hook (App.js 475 → 460 lines)
+- [x] **Phase 14**: Testing suite with Jest + React Testing Library
+- [x] **Phase 15**: Redux state management implementation
 
-### Netlify
-```bash
-npm run build
-# Deploy the build folder to Netlify
-```
+### In Progress 🔄
+- [ ] Redux slice migrations
+- [ ] Prop drilling elimination
+- [ ] Redux DevTools integration
 
-### Vercel
-```bash
-# Push to GitHub and connect with Vercel
-# Auto-deploys on push to main branch
-```
-
-### GitHub Pages
+### Planned 📋
+- [ ] Backend API with Node.js/Express
+- [ ] User authentication (JWT)
+- [ ] Real database (MongoDB/PostgreSQL)
+- [ ] Team collaboration with real-time sync (WebSockets)
+- [ ] Mobile app (React Native)
+- [ ] Advanced reporting and analytics
+- [ ] Self-hosted option
 ```bash
 npm run build
 # Deploy build folder to GitHub Pages
