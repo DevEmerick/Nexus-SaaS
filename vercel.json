@@ -1,7 +1,6 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "build",
   "env": {
     "DATABASE_URL": "@database_url",
     "PRISMA_DATABASE_URL": "@prisma_database_url",
