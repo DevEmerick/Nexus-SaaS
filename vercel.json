@@ -9,29 +9,16 @@
     "FRONTEND_URL": "@frontend_url",
     "REACT_APP_API_URL": "@react_app_api_url"
   },
-  "headers": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/health",
-      "destination": "/api/health.js"
+      "src": "/health(.*)",
+      "dest": "/api.js",
+      "methods": ["GET", "POST"]
     },
     {
-      "source": "/api/:path*",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/build/index.html",
+      "status": 200
     }
   ]
 }
