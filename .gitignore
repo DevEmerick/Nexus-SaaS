@@ -38,3 +38,6 @@ prisma/generated/
 # IDE
 .vs/
 .vscode/settings.json
+
+# Documentation (keep in docs/ folder only)
+/*.md
