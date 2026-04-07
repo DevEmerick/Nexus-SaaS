@@ -1,0 +1,78 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  avatar    String?
+  themePreference String @default("dark")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  workspaces Workspace[] @relation("userWorkspaces")
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  title     String
+  color     String   @default("indigo")
+  userId    String
+  user      User     @relation("userWorkspaces", fields: [userId], references: [id], onDelete: Cascade)
+  
+  columns   Column[]
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
+}
+
+model Column {
+  id          String   @id @default(cuid())
+  title       String
+  color       String
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  
+  tasks       Task[]
+  position    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([workspaceId])
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  workspaceId String
+  columnId    String
+  
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  
+  priority    String   @default("Média")
+  deadline    DateTime?
+  cardColor   String   @default("slate")
+  
+  completionComment String?
+  assignedTo  String?
+  tags        String   @default("")
+  
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([workspaceId, columnId])
+  @@index([deletedAt])
+}
