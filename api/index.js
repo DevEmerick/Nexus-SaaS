@@ -1,44 +1,129 @@
-// Vercel Serverless Handler para /api/*
+export const config = {
+  runtime: 'nodejs18.x',
+  maxDuration: 30,
+};
+
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export default function handler(req, res) {
-  const path = req.url.split('?')[0]; // Remove query params
+  const url = req.url.split('?')[0];
   
-  // CORS Headers
+  // Set CORS headers
+  res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
-  
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+
+  // OPTIONS request for CORS
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
-  // Health check  
-  if (path === '/api/health' || path === '/api') {
-    return res.status(200).json({ 
+  // Health check endpoint
+  if (url === '/health') {
+    return res.status(200).json({
       status: 'API running',
       timestamp: new Date().toISOString(),
-      version: '1.0.0',
       environment: process.env.NODE_ENV || 'production',
       database: process.env.DATABASE_URL ? 'configured' : 'missing'
     });
   }
-  
-  if (path === '/api/status') {
+
+  // Status endpoint
+  if (url === '/status') {
     return res.status(200).json({
-      status: 'API is operational',
-      environment: process.env.NODE_ENV,
-      nodeVersion: process.version,
-      timestamp: new Date().toISOString(),
-      database: process.env.DATABASE_URL ? 'connected' : 'not configured'
+      ok: true,
+      uptime: process.uptime(),
+      memory: process.memoryUsage()
     });
   }
 
-  // Placeholder para outras rotas
-  return res.status(200).json({ 
-    message: 'API is running',
-    path: path,
-    method: req.method
-  });
+  // Test create endpoint - cria dados no banco Vercel
+  if (url === '/test-create') {
+    return testCreate(res);
+  }
+
+  // Test fetch endpoint - busca dados salvos
+  if (url === '/test-fetch') {
+    return testFetch(res);
+  }
+
+  // Default 404
+  return res.status(404).json({ error: 'Not found', path: url });
+}
+
+async function testCreate(res) {
+  try {
+    const testUser = await prisma.user.create({
+      data: {
+        email: `test-${Date.now()}@vercel.test`,
+        name: 'Test User from Vercel',
+        password: 'testpassword123',
+      },
+    });
+
+    const testWorkspace = await prisma.workspace.create({
+      data: {
+        name: 'Test Workspace from Vercel',
+        ownerId: testUser.id,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Dados criados com sucesso no banco Vercel Postgres',
+      user: {
+        id: testUser.id,
+        email: testUser.email,
+        name: testUser.name,
+      },
+      workspace: {
+        id: testWorkspace.id,
+        name: testWorkspace.name,
+      },
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+      hint: 'Verifique se DATABASE_URL está configurado no Vercel e acessível',
+    });
+  }
+}
+
+async function testFetch(res) {
+  try {
+    const users = await prisma.user.findMany({
+      take: 5,
+      include: {
+        workspaces: true,
+      },
+    });
+
+    const workspaces = await prisma.workspace.findMany({
+      take: 5,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Dados recuperados do banco Vercel Postgres',
+      totalUsers: users.length,
+      totalWorkspaces: workspaces.length,
+      recentUsers: users,
+      recentWorkspaces: workspaces,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+      hint: 'Verifique se DATABASE_URL está configurado no Vercel',
+    });
+  }
+}
+  return res.status(404).json({ error: 'Not found', path: url });
 }
