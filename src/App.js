@@ -11,7 +11,6 @@ import AppHeader from './components/Header/AppHeader';
 import BoardView from './components/Board/BoardView';
 import ModalsContainer from './components/Modals/ModalsContainer';
 import { useWorkspaceActions, useTaskActions, useAuthActions, useBoardActions, useCommentActions, useUtilityFunctions } from './hooks';
-import { useReduxAuth, useReduxWorkspace, useReduxTask, useReduxBoard, useReduxComment } from './hooks/redux';
 
 const App = () => {
   // --- Estados de Autenticação & Usuários ---
