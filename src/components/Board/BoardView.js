@@ -2,7 +2,7 @@ import { Filter, Plus, ListTodo, MessageSquare, Paperclip, Clock, CheckCircle2, 
 import { PALETTE, COLOR_KEYS } from '../../utils/constants';
 import { checkIsOverdue } from '../../utils/validation';
 import { getPriorityStyles } from '../../utils/styles';
-import { getColorNameFromHex } from '../../utils/colorMapper';
+import { getColorNameFromHex, getColorNameFromSimple } from '../../utils/colorMapper';
 
 const BoardView = ({
   theme,
