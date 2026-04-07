@@ -113,7 +113,7 @@ const App = () => {
   const [renameColumnTitle, setRenameColumnTitle] = useState('');
 
   // --- Efeitos de Autenticação e Persistência ---
-  useEffect(() => { localStorage.setItem('nexus_users', JSON.stringify(users)); }, [users]);
+  // Apenas salvar currentUser no localStorage (para saber quem está logado)
   useEffect(() => { localStorage.setItem('nexus_current_user', JSON.stringify(currentUser)); }, [currentUser]);
   useEffect(() => { localStorage.setItem('nexus_notifications', JSON.stringify(notifications)); }, [notifications]);
 
@@ -208,8 +208,7 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => { localStorage.setItem('nexus_kanban_tasks', JSON.stringify(tasks)); }, [tasks]);
-  useEffect(() => { localStorage.setItem('nexus_workspaces', JSON.stringify(workspaces)); }, [workspaces]);
+  // Tasks e Workspaces agora vêm apenas da API, não são salvos em localStorage
 
   // Efecte per l'accés directe de la Cerca Global (Ctrl+K o Cmd+K)
   useEffect(() => {
