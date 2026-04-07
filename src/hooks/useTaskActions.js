@@ -18,42 +18,61 @@ export const useTaskActions = (
     timestamp: new Date().toISOString()
   });
 
-  const handleSaveTask = (e) => {
+  const handleSaveTask = async (e) => {
     e.preventDefault();
     if (!taskForm.title.trim() || !activeWorkspaceId) return;
 
-    if (editingTaskId) {
-      // Atualizar existente
-      setTasks(prev => prev.map(t => 
-        t.id === editingTaskId
-          ? {
-              ...t,
-              ...taskForm,
-              workspaceId: activeWorkspaceId,
-              history: [...(t.history || []), createLog('UPDATE', `Atualizou o card: "${taskForm.title}"`)]
-            }
-          : t
-      ));
-    } else {
-      // Criar novo
-      const newTask = {
-        id: generateId(),
-        ...taskForm,
-        workspaceId: activeWorkspaceId,
-        createdAt: new Date().toISOString(),
-        history: [createLog('CREATE', `Criou o card: "${taskForm.title}"`)]
-      };
-      setTasks(prev => [...prev, newTask]);
-    }
+    try {
+      if (editingTaskId) {
+        // TODO: Atualizar no servidor via API
+        setTasks(prev => prev.map(t => 
+          t.id === editingTaskId
+            ? {
+                ...t,
+                ...taskForm,
+                workspaceId: activeWorkspaceId,
+                history: [...(t.history || []), createLog('UPDATE', `Atualizou o card: "${taskForm.title}"`)]
+              }
+            : t
+        ));
+      } else {
+        // Criar novo na API
+        const response = await fetch(`${window.location.origin}/api/createtask`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: taskForm.title,
+            description: taskForm.description || '',
+            workspaceId: activeWorkspaceId,
+            columnId: taskForm.status, // status contém o columnId
+            priority: taskForm.priority || 'Média',
+            deadline: taskForm.deadline || null,
+            cardColor: taskForm.cardColor || 'slate',
+            assignedTo: taskForm.assignedTo || '',
+            tags: taskForm.tags || ''
+          })
+        });
 
-    // Reset form
-    setTaskForm({
-      title: '', description: '', priority: 'Média', status: 'todo',
-      cardColor: 'slate', deadline: new Date().toISOString().split('T')[0],
-      subtasks: [], completionComment: '', assignees: [], comments: [], tagIds: [], attachments: []
-    });
-    setEditingTaskId(null);
-    setIsModalOpen(false);
+        if (!response.ok) {
+          throw new Error('Erro ao criar tarefa');
+        }
+
+        const { task } = await response.json();
+        setTasks(prev => [...prev, task]);
+      }
+
+      // Reset form
+      setTaskForm({
+        title: '', description: '', priority: 'Média', status: 'todo',
+        cardColor: 'slate', deadline: new Date().toISOString().split('T')[0],
+        subtasks: [], completionComment: '', assignees: [], comments: [], tagIds: [], attachments: []
+      });
+      setEditingTaskId(null);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Erro ao salvar tarefa:', error);
+      alert('Erro ao salvar tarefa: ' + error.message);
+    }
   };
 
   const handleOpenModal = (task = null, columnId = null) => {
