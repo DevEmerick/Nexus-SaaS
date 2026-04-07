@@ -56,7 +56,7 @@ const AppHeader = ({
                   return (
                     <div key={w.id} className={`w-full px-2 py-1 rounded-xl flex items-center justify-between transition-colors ${activeWorkspace?.id === w.id ? (theme === 'dark' ? 'bg-indigo-900/30' : 'bg-indigo-50') : (theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-slate-50')}`}>
                       <button onClick={() => { setActiveWorkspaceId(w.id); setIsWorkspaceMenuOpen(false); }} className={`flex-1 text-left px-2 py-2 text-sm font-bold flex items-center gap-3 truncate ${activeWorkspace?.id === w.id ? (theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600') : (theme === 'dark' ? 'text-slate-300' : 'text-slate-700')}`}>
-                        <div className={`w-2.5 h-2.5 rounded-full ${PALETTE[w.color || 'indigo'].dot}`} />
+                        <div className={`w-2.5 h-2.5 rounded-full ${PALETTE[getColorNameFromHex(w.color)].dot}`} />
                         <span className="truncate">{w.title}</span>
                       </button>
                       {isWAdmin && (
