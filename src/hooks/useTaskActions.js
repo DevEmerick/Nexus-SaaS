@@ -54,7 +54,8 @@ export const useTaskActions = (
         });
 
         if (!response.ok) {
-          throw new Error('Erro ao criar tarefa');
+          const errorData = await response.json();
+          throw new Error(`API Error: ${errorData.error || 'Erro ao criar tarefa'}`);
         }
 
         const { task } = await response.json();
