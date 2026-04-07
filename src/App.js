@@ -189,7 +189,7 @@ const App = () => {
       
       loadAPIData();
     }
-  }, [currentUser]);
+  }, [currentUser, apiIntegration]);
 
   useEffect(() => {
     const saved = localStorage.getItem('nexus_kanban_tasks');
