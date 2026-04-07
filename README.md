@@ -183,19 +183,30 @@ Nexus SaaS includes a comprehensive color palette:
 
 ### Code Organization
 - **Component-Driven**: Modular components with clear responsibilities
-- **Custom Hooks**: 6 specialized hooks for business logic
+- **Custom Hooks Layer**: 6 specialized hooks for business logic
   - `useAuthActions` - Authentication and profile management
   - `useWorkspaceActions` - Workspace CRUD operations
   - `useTaskActions` - Task management and history
   - `useBoardActions` - Drag-drop and column management
   - `useCommentActions` - Comments, replies, and file uploads
   - `useUtilityFunctions` - Utility functions (history, metrics, user lookup)
+- **Redux Hooks Layer** (Phase 16): 5 custom Redux hooks for state extraction
+  - `useReduxAuth` - Redux-based authentication state
+  - `useReduxWorkspace` - Redux workspace management
+  - `useReduxTask` - Redux task state and operations
+  - `useReduxBoard` - Redux board/drag-drop state
+  - `useReduxComment` - Redux comment state
 - **Redux State Management**: Centralized state with DevTools support
+  - 4 Redux slices (auth, workspace, task, ui)
+  - 48 total Redux actions
+  - Automatic middleware (thunk) and devtools integration
 - **Test Coverage**: Comprehensive Jest + RTL test suite (20+ tests)
 
 ### Key Metrics
 - **App.js Size**: 460 lines (-83% from original 2,700)
 - **Total Hook Code**: 691 lines (reusable, testable)
+- **Redux Slices**: 4 slices (372 lines)
+- **Redux Hooks**: 5 custom hooks (620+ lines)
 - **Custom Hooks**: 6 specialized hooks
 - **Components**: 8 major components
 - **Test Suites**: 6 (59% pass rate at baseline)
@@ -248,13 +259,14 @@ Nexus SaaS includes a comprehensive color palette:
 - [x] **Phase 11**: Comment actions hook (App.js 486 → 475 lines)
 - [x] **Phase 12**: Import cleanup (38 warnings → 0)
 - [x] **Phase 13**: Utility functions hook (App.js 475 → 460 lines)
-- [x] **Phase 14**: Testing suite with Jest + React Testing Library
-- [x] **Phase 15**: Redux state management implementation
+- [x] **Phase 14**: Testing suite with Jest + React Testing Library (20+ tests)
+- [x] **Phase 15**: Redux state management implementation (4 slices, 48 actions)
+- [x] **Phase 16**: Redux hooks layer created (5 custom hooks for state management)
 
 ### In Progress 🔄
-- [ ] Redux slice migrations
-- [ ] Prop drilling elimination
-- [ ] Redux DevTools integration
+- [ ] Integrating Redux hooks into App.js
+- [ ] Eliminating prop drilling with Redux
+- [ ] Connecting custom hooks to Redux slices
 
 ### Planned 📋
 - [ ] Backend API with Node.js/Express
