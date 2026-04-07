@@ -9,11 +9,26 @@
     "FRONTEND_URL": "@frontend_url",
     "REACT_APP_API_URL": "@react_app_api_url"
   },
-  "redirects": [
+  "functions": {
+    "api.js": {
+      "maxDuration": 10
+    },
+    "api/**/*.js": {
+      "maxDuration": 10
+    }
+  },
+  "routes": [
     {
-      "source": "/health",
-      "destination": "/api.js",
-      "statusCode": 307
+      "src": "/health",
+      "dest": "/api.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/build/index.html"
     }
   ]
 }
