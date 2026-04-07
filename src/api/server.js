@@ -40,8 +40,8 @@ app.use((err, req, res, next) => {
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`✅ API running on http://localhost:${PORT}`);
-  console.log(`📊 Available endpoints:`);
+  console.log(`API running on http://localhost:${PORT}`);
+  console.log(`Available endpoints:`);
   console.log(`   GET  /api/users`);
   console.log(`   POST /api/users`);
   console.log(`   GET  /api/workspaces/user/:userId`);

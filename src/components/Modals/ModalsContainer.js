@@ -183,7 +183,7 @@ const ModalsContainer = ({
 
                 <div className="space-y-4">
                   <label className={`text-[10px] font-black uppercase tracking-widest ml-1 flex items-center gap-1 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
-                    ✅ Checklist / Subtarefas
+                    Checklist / Subtarefas
                   </label>
                   <div className="flex gap-2">
                     <input type="text" value={subtaskInput} onChange={(e) => setSubtaskInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleAddSubtask(e); }} className={`flex-1 px-6 py-4 rounded-[1rem] border-2 focus:outline-none font-bold text-sm shadow-inner transition-all ${theme === 'dark' ? 'bg-slate-800 border-slate-700 focus:border-indigo-500 text-slate-100' : 'bg-slate-50/50 border-slate-100 focus:border-indigo-500 text-slate-800'}`} placeholder="Ex: Revisar capítulo 2..." />

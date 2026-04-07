@@ -1,0 +1,9 @@
+# Don't build these
+node_modules
+.git
+.env
+.env.local
+coverage
+docs
+PHASE2_IN_PROGRESS.md
+TESTING_PHASE14.md

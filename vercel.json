@@ -1,7 +1,6 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "public": false,
   "env": {
     "DATABASE_URL": "@database_url",
     "PRISMA_DATABASE_URL": "@prisma_database_url",
@@ -10,20 +9,11 @@
     "FRONTEND_URL": "@frontend_url",
     "REACT_APP_API_URL": "@react_app_api_url"
   },
-  "functions": {
-    "api.js": {
-      "maxDuration": 10
-    }
-  },
-  "routes": [
+  "redirects": [
     {
-      "src": "^/health(/)?$",
-      "dest": "/api.js",
-      "methods": ["GET", "HEAD", "OPTIONS"]
-    },
-    {
-      "src": "^(?!/health).*",
-      "dest": "/build/index.html"
+      "source": "/health",
+      "destination": "/api.js",
+      "statusCode": 307
     }
   ]
 }
