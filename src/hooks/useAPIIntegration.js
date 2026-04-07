@@ -88,7 +88,12 @@ export const useAPIIntegration = () => {
       }
 
       const data = await response.json();
-      return data.data || [];
+      // Mapear columnId para status para compatibilidade com frontend
+      const tasksWithStatus = (data.data || []).map(task => ({
+        ...task,
+        status: task.columnId || 'todo'
+      }));
+      return tasksWithStatus;
     } catch (error) {
       console.error('Fetch tasks error:', error);
       return [];
