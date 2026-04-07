@@ -161,10 +161,10 @@ else
   echo ""
 
   # Teste 9: Update Workspace
-  echo -e "${YELLOW}[TEST 9] PUT /api/updateworkspace${NC}"
-  RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/updateworkspace" \
+  echo -e "${YELLOW}[TEST 9] PUT /api/update (type=workspace)${NC}"
+  RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/update" \
     -H "Content-Type: application/json" \
-    -d "{\"id\":\"$WORKSPACE_ID\",\"title\":\"Updated Workspace\",\"color\":\"#FF5733\"}")
+    -d "{\"type\":\"workspace\",\"id\":\"$WORKSPACE_ID\",\"title\":\"Updated Workspace\",\"color\":\"#FF5733\"}")
   HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
   if [ "$HTTP_CODE" = "200" ]; then
@@ -177,14 +177,14 @@ else
   echo ""
 
   # Teste 10: Update User
-  echo -e "${YELLOW}[TEST 10] PUT /api/updateuser${NC}"
+  echo -e "${YELLOW}[TEST 10] PUT /api/update (type=user)${NC}"
   USERS=$(curl -s "$BASE_URL/api/listusers")
   USER_ID=$(echo "$USERS" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
   
   if [ -n "$USER_ID" ]; then
-    RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/updateuser" \
+    RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/update" \
       -H "Content-Type: application/json" \
-      -d "{\"id\":\"$USER_ID\",\"name\":\"Updated User\",\"phone\":\"1234567890\"}")
+      -d "{\"type\":\"user\",\"id\":\"$USER_ID\",\"name\":\"Updated User\",\"phone\":\"1234567890\"}")
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
     if [ "$HTTP_CODE" = "200" ]; then
@@ -205,10 +205,10 @@ else
 
   if [ -n "$COLUMN_ID" ]; then
     # Teste 11: Update Column
-    echo -e "${YELLOW}[TEST 11] PUT /api/updatecolumn${NC}"
-    RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/updatecolumn" \
+    echo -e "${YELLOW}[TEST 11] PUT /api/update (type=column)${NC}"
+    RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/update" \
       -H "Content-Type: application/json" \
-      -d "{\"id\":\"$COLUMN_ID\",\"title\":\"Updated Column\",\"position\":2}")
+      -d "{\"type\":\"column\",\"id\":\"$COLUMN_ID\",\"title\":\"Updated Column\",\"position\":2}")
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
     if [ "$HTTP_CODE" = "200" ]; then
@@ -227,10 +227,10 @@ else
 
   if [ -n "$TASK_ID" ]; then
     # Teste 12: Update Task
-    echo -e "${YELLOW}[TEST 12] PUT /api/updatetask${NC}"
-    RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/updatetask" \
+    echo -e "${YELLOW}[TEST 12] PUT /api/update (type=task)${NC}"
+    RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/update" \
       -H "Content-Type: application/json" \
-      -d "{\"id\":\"$TASK_ID\",\"title\":\"Updated Task\",\"priority\":\"Alta\"}")
+      -d "{\"type\":\"task\",\"id\":\"$TASK_ID\",\"title\":\"Updated Task\",\"priority\":\"Alta\"}")
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
     if [ "$HTTP_CODE" = "200" ]; then
@@ -243,10 +243,10 @@ else
     echo ""
 
     # Teste 13: Soft Delete Task
-    echo -e "${YELLOW}[TEST 13] DELETE /api/deletetask (soft delete)${NC}"
-    RESPONSE=$(curl -s -w "\n%{http_code}" -X DELETE "$BASE_URL/api/deletetask" \
+    echo -e "${YELLOW}[TEST 13] DELETE /api/delete (soft delete task)${NC}"
+    RESPONSE=$(curl -s -w "\n%{http_code}" -X DELETE "$BASE_URL/api/delete" \
       -H "Content-Type: application/json" \
-      -d "{\"id\":\"$TASK_ID\",\"permanent\":false}")
+      -d "{\"type\":\"task\",\"id\":\"$TASK_ID\",\"permanent\":false}")
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
     if [ "$HTTP_CODE" = "200" ]; then
