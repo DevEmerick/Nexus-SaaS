@@ -39,5 +39,6 @@ prisma/generated/
 .vs/
 .vscode/settings.json
 
-# Documentation (keep in docs/ folder only)
+# Documentation (keep local only, never track)
 /*.md
+docs/
