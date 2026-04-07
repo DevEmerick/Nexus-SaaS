@@ -271,9 +271,11 @@ echo ""
 # UPDATE TASK (with comment)
 echo -e "${YELLOW}[TEST 12] PUT - Update Task (with comment)${NC}"
 if [ -n "$TASK_ID" ]; then
-  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT "$BASE_URL/api/update" \
+  RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/update" \
     -H "Content-Type: application/json" \
     -d "{\"type\":\"task\",\"id\":\"$TASK_ID\",\"title\":\"Updated Card\",\"priority\":\"Crítica\",\"completionComment\":\"Task completed successfully!\",\"assignedTo\":\"DevTeam\"}")
+  
+  HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
   
   if [ "$HTTP_CODE" = "200" ]; then
     echo -e "${GREEN}✓ PASS${NC} - HTTP 200"
@@ -323,13 +325,12 @@ echo ""
 # Criar novo task após soft delete anterior
 if [ -n "$COLUMN_ID" ] && [ -n "$WORKSPACE_ID" ]; then
   echo -e "${YELLOW}[TEST 14] POST - Create Card for permanent deletion test${NC}"
-  CREATE_TASK=$(curl -s -X POST "$BASE_URL/api/createtask" \
+  RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/createtask" \
     -H "Content-Type: application/json" \
     -d "{\"title\":\"Card to Delete\",\"description\":\"This will be permanently deleted\",\"columnId\":\"$COLUMN_ID\",\"workspaceId\":\"$WORKSPACE_ID\",\"priority\":\"Baixa\",\"cardColor\":\"red\"}")
   
-  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BASE_URL/api/createtask" \
-    -H "Content-Type: application/json" \
-    -d "{\"title\":\"Temp Card\",\"columnId\":\"$COLUMN_ID\",\"workspaceId\":\"$WORKSPACE_ID\"}")
+  HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+  CREATE_TASK=$(echo "$RESPONSE" | sed '$d')
   
   if [ "$HTTP_CODE" = "201" ] || [ "$HTTP_CODE" = "200" ]; then
     echo -e "${GREEN}✓ PASS${NC} - HTTP $HTTP_CODE"
