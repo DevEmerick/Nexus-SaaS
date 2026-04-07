@@ -2,12 +2,21 @@
   "name": "nexus-saas",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -20,9 +29,14 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",
+    "dev:api": "NODE_ENV=development node src/api/server.js",
     "build": "react-scripts build",
+    "build:api": "echo 'API is serverless on Vercel - no build needed'",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +59,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
+    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.19"
   }
 }
