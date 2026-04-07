@@ -3,8 +3,12 @@
   "buildCommand": "npm run build",
   "builds": [
     {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
+      "src": "api.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "runtime": "nodejs18.x"
+      }
     },
     {
       "src": "build",
@@ -13,19 +17,19 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1.js"
-    },
-    {
-      "src": "/health",
+      "src": "^/(health|status)$",
       "dest": "/api.js"
     },
     {
-      "src": "/(.*)",
+      "src": "^/api/(.*)$",
+      "dest": "/api.js"
+    },
+    {
+      "src": "^/(?!static).*\\..*$",
       "dest": "/build/$1"
     },
     {
-      "src": "/",
+      "src": "^/((?!api|health|status).)*$",
       "dest": "/build/index.html"
     }
   ],
@@ -38,3 +42,4 @@
     "REACT_APP_API_URL": "@react_app_api_url"
   }
 }
+
