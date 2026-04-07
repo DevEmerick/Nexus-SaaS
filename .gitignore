@@ -23,6 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # Documentation files (not tracked)
-docs/theme.md
-docs/MOBILE_FIRST.md
-docs/BACKEND_MIGRATION_PLAN.md
+*.md
+docs/
