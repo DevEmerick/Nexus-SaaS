@@ -1,6 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
+  "outputDirectory": "build",
   "env": {
     "DATABASE_URL": "@database_url",
     "PRISMA_DATABASE_URL": "@prisma_database_url",
@@ -8,6 +9,31 @@
     "NODE_ENV": "production",
     "FRONTEND_URL": "@frontend_url",
     "REACT_APP_API_URL": "@react_app_api_url"
-  }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/health",
+      "destination": "/api/health.js"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
 }
 
