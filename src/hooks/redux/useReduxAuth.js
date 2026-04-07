@@ -115,5 +115,8 @@ export const useReduxAuth = () => {
     authView,
     authError,
     authForm,
+    setAuthView: (view) => dispatch(setAuthView(view)),
+    setAuthForm: (form) => dispatch(updateAuthForm(form)),
+    setAuthError: (error) => dispatch(setAuthError(error)),
   };
 };
