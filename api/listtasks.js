@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
   try {
     const tasks = await prisma.task.findMany({
-      include: { column: true, comments: true },
+      include: { column: true },
     });
 
     return res.status(200).json({
