@@ -34,10 +34,10 @@ export const useBoardActions = (
     if(target) { target.classList.remove('is-dragging'); target.style.opacity = '1'; }
   };
 
-  const handleDrop = (columnId) => {
+  const handleDrop = async (columnId) => {
     if (!draggedTaskId) return;
     const draggedTask = tasks.find(t => t.id === draggedTaskId);
-    if (!draggedTask || draggedTask.status === columnId) { 
+    if (!draggedTask || draggedTask.columnId === columnId) { 
       setDraggedTaskId(null); 
       return; 
     } 
@@ -48,27 +48,37 @@ export const useBoardActions = (
       return;
     }
 
-    setTasks(prev => prev.map(t => {
-      if (t.id === draggedTaskId) {
-        const isNowDone = columnId === 'done';
-        const wasDone = t.status === 'done';
-        let newCompletedAt = t.completedAt;
-        let logs = [...(t.history || [])];
-        
-        const colName = activeWorkspace.columns.find(c => c.id === columnId)?.title;
-        logs.push(createLog('STATUS', `Moveu para "${colName}"`));
+    try {
+      // Atualizar no banco via API
+      const response = await fetch(`${typeof window !== 'undefined' ? window.location.origin : ''}/api/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'task',
+          id: draggedTaskId,
+          columnId: columnId
+        })
+      });
 
-        if (isNowDone && !wasDone) {
-          newCompletedAt = new Date().toISOString();
-          logs.push(createLog('COMPLETE', 'Finalizou o card arrastando'));
-        } else if (!isNowDone && wasDone) {
-          newCompletedAt = null;
-          logs.push(createLog('REOPEN', 'Reabriu o card'));
-        }
-        return { ...t, status: columnId, completedAt: newCompletedAt, completionComment: isNowDone ? t.completionComment : '', history: logs };
+      if (!response.ok) {
+        const errorData = await response.json();
+        setAppAlert(`Erro ao mover card: ${errorData.error || 'Erro desconhecido'}`);
+        setDraggedTaskId(null);
+        return;
       }
-      return t;
-    }));
+
+      // Atualizar estado local após sucesso na API
+      setTasks(prev => prev.map(t => {
+        if (t.id === draggedTaskId) {
+          return { ...t, columnId: columnId, status: columnId };
+        }
+        return t;
+      }));
+    } catch (error) {
+      console.error('Erro ao mover card:', error);
+      setAppAlert('Erro ao mover card');
+    }
+    
     setDraggedTaskId(null);
   };
 
