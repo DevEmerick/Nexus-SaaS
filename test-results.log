@@ -1,0 +1,123 @@
+Iniciando testes automatizados dos endpoints...
+Base URL: https://nexus-saas-git-preview-devemericks-projects.vercel.app
+Timestamp: Tue Apr  7 17:41:53 -03 2026
+
+=== HEALTH CHECK ===
+Testing: GET /api/health
+✓ PASS (HTTP 200)
+Response: {"status":"API running","timestamp":"2026-04-07T20:41:53.773Z","environment":"production","database":"configured"}
+
+=== TESTING USERS ENDPOINT ===
+Testing: GET /api/users
+✗ FAIL (Expected 200, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::k2tr5-1775594513918-f01f1a71e5d3
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::k2tr5-1775594513918-f01f1a71e5d3
+
+Testing: POST /api/users
+✗ FAIL (Expected 201, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::4x9f8-1775594514012-62aae4d250fb
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::4x9f8-1775594514012-62aae4d250fb
+
+=== TESTING WORKSPACES ENDPOINT ===
+Testing: GET /api/workspaces
+✗ FAIL (Expected 200, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::ssz9g-1775594514121-fe5dca31f383
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::ssz9g-1775594514121-fe5dca31f383
+
+Testing: POST /api/workspaces
+✗ FAIL (Expected 201, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::k2tr5-1775594514227-a212c90d2d78
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::k2tr5-1775594514227-a212c90d2d78
+
+=== TESTING COLUMNS ENDPOINT ===
+Testing: GET /api/columns
+✗ FAIL (Expected 200, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::mxhd9-1775594514332-07cb1ba7761b
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::mxhd9-1775594514332-07cb1ba7761b
+
+Testing: POST /api/columns
+✗ FAIL (Expected 201, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::v9mzr-1775594514423-2962600aa5ef
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::v9mzr-1775594514423-2962600aa5ef
+
+=== TESTING TASKS ENDPOINT ===
+Testing: GET /api/tasks
+✗ FAIL (Expected 200, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::mk65p-1775594514525-09ed9188d056
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::mk65p-1775594514525-09ed9188d056
+
+Testing: POST /api/tasks
+✗ FAIL (Expected 201, got 404)
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::rxxkg-1775594514637-5d1ce22f8535
+Response: The page could not be found
+
+NOT_FOUND
+
+gru1::rxxkg-1775594514637-5d1ce22f8535
+
+
+=== SUMMARY ===
+Passed: 1
+Failed: 8
+
+✗ Some tests failed
