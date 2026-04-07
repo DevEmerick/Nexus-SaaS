@@ -99,6 +99,24 @@ export default async function handler(req, res) {
         },
       });
 
+      // Criar workspace padrão com colunas
+      const defaultWorkspace = await prisma.workspace.create({
+        data: {
+          title: 'Meu Quadro',
+          color: '#6366f1',
+          userId: newUser.id,
+        },
+      });
+
+      // Criar 3 colunas padrão
+      await prisma.column.createMany({
+        data: [
+          { title: 'To Do', color: '#ef4444', workspaceId: defaultWorkspace.id, position: 0 },
+          { title: 'In Progress', color: '#f59e0b', workspaceId: defaultWorkspace.id, position: 1 },
+          { title: 'Done', color: '#10b981', workspaceId: defaultWorkspace.id, position: 2 },
+        ],
+      });
+
       return res.status(201).json({
         success: true,
         message: 'User registered successfully',
