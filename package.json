@@ -30,7 +30,7 @@
     "start": "react-scripts start",
     "dev": "react-scripts start",
     "dev:api": "NODE_ENV=development node src/api/server.js",
-    "build": "react-scripts build",
+    "build": "prisma generate && react-scripts build",
     "build:api": "echo 'API is serverless on Vercel - no build needed'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
