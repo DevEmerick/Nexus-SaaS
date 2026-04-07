@@ -10,7 +10,7 @@ import AuthForm from './components/Auth/AuthForm';
 import AppHeader from './components/Header/AppHeader';
 import BoardView from './components/Board/BoardView';
 import ModalsContainer from './components/Modals/ModalsContainer';
-import { useWorkspaceActions, useTaskActions, useAuthActions, useBoardActions, useCommentActions } from './hooks';
+import { useWorkspaceActions, useTaskActions, useAuthActions, useBoardActions, useCommentActions, useUtilityFunctions } from './hooks';
 
 const App = () => {
   // --- Estados de Autenticação & Usuários ---
@@ -385,9 +385,10 @@ const App = () => {
 
 
 
-  const reverseHistory = () => {
-    return [...(taskForm.history || [])].reverse();
-  };
+  const { reverseHistory, getUserDetails, calculateDashboardMetrics } = useUtilityFunctions(
+    taskForm,
+    users
+  );
 
 
 
@@ -397,23 +398,7 @@ const App = () => {
 
 
 
-  const getUserDetails = (uid) => users.find(u => u.id === uid) || { name: 'Usuário Removido', avatar: '' };
 
-  const calculateDashboardMetrics = (wsTasks) => {
-    const totalT = wsTasks.length;
-    const completedT = wsTasks.filter(t => t.status === 'done').length;
-    const inProgressT = wsTasks.filter(t => t.status !== 'done' && t.status !== 'todo').length;
-    const overdueT = wsTasks.filter(t => t.status !== 'done' && checkIsOverdue(t.deadline)).length;
-    const completionRate = totalT === 0 ? 0 : Math.round((completedT / totalT) * 100);
-
-    const workDistribution = [
-      { status: 'todo', value: wsTasks.filter(t => t.status === 'todo').length },
-      { status: 'doing', value: inProgressT },
-      { status: 'done', value: completedT }
-    ];
-
-    return { completed: completedT, inProgress: inProgressT, overdue: overdueT, total: totalT, completionRate, workDistribution };
-  };
 
   // ==========================================
   // RENDERIZAÇÃO DAS TELAS DE AUTENTICAÇÃO
