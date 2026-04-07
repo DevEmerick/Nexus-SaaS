@@ -10,6 +10,9 @@ const prisma = new PrismaClient();
 export default function handler(req, res) {
   const url = req.url.split('?')[0];
   
+  // Debug log
+  console.log('API Handler - URL:', url, 'Method:', req.method);
+  
   // Set CORS headers
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -20,6 +23,16 @@ export default function handler(req, res) {
   // OPTIONS request for CORS
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  // Test create endpoint
+  if (url === '/test-create') {
+    return testCreate(res);
+  }
+
+  // Test fetch endpoint
+  if (url === '/test-fetch') {
+    return testFetch(res);
   }
 
   // Health check endpoint
