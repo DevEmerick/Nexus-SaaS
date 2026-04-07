@@ -5,7 +5,7 @@ import {
   PartyPopper, Moon, Sun, AlertCircle, Filter, ArrowDownUp, ListTodo, PlusCircle, 
   AlertTriangle, Trash, Search, ChevronDown, FolderPlus, Palette, MessageSquare, 
   Settings, User, LogOut, Lock, Mail, UserCircle, KeyRound, Camera, Phone,
-  Users, History, Send, MoreVertical, ArrowLeft, ArrowRight, Edit3, Tag, ShieldCheck, Shield,
+  Users, History, Send, MoreVertical, ArrowLeft, ArrowRight, Edit3, Tag, ShieldCheck,
   Activity, Bell, Bold, Italic, Strikethrough, Link, List as ListIcon, Sparkles, Loader2,
   Paperclip, FileText
 } from 'lucide-react';
@@ -55,8 +55,8 @@ const callGeminiAPI = async (prompt, isJson = false) => {
   }
 
   let retries = 5;
-  let delay = 1000;
   for (let i = 0; i < retries; i++) {
+    let delayMs = 1000 * Math.pow(2, i);
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -69,8 +69,7 @@ const callGeminiAPI = async (prompt, isJson = false) => {
       return isJson ? JSON.parse(text) : text;
     } catch (err) {
       if (i === retries - 1) throw err;
-      await new Promise(res => setTimeout(res, delay));
-      delay *= 2;
+      await new Promise(res => setTimeout(res, delayMs));
     }
   }
 };
@@ -367,7 +366,7 @@ const App = () => {
       } catch (e) {}
     };
     fetchHolidays();
-  }, [currentDate.getFullYear()]);
+  }, [currentDate]);
 
   // --- Lógica Derivada de Tarefas ---
   const checkIsOverdue = (deadline) => {
@@ -484,7 +483,7 @@ const App = () => {
     if (currentUser?.themePreference) {
       setTheme(currentUser.themePreference);
     }
-  }, [currentUser?.id]);
+  }, [currentUser?.themePreference]);
 
   const handleLogout = () => {
     setCurrentUser(null);
@@ -903,37 +902,7 @@ const App = () => {
     setDeleteConfirmation({ type: 'workspace', action: 'trash', id: editingWorkspaceForm.id, title: editingWorkspaceForm.title });
   };
 
-  // Funções dentro do Modal de Editar Workspace
-  const handleToggleMember = (userId) => {
-    setEditingWorkspaceForm(prev => {
-      const isMember = prev.members.some(m => m.userId === userId);
-      if (isMember) {
-        if (userId === activeWorkspace.userId) return prev; // O dono não pode ser removido
-        return { ...prev, members: prev.members.filter(m => m.userId !== userId) };
-      } else {
-        return { ...prev, members: [...prev.members, { userId, role: 'member' }] };
-      }
-    });
-  };
 
-  const handleChangeMemberRole = (userId, role) => {
-    if (userId === activeWorkspace.userId) return; // Dono é sempre admin
-    setEditingWorkspaceForm(prev => ({
-      ...prev, members: prev.members.map(m => m.userId === userId ? { ...m, role } : m)
-    }));
-  };
-
-  const handleAddTagToWorkspace = () => {
-    if (!newTagForm.label.trim()) return;
-    setEditingWorkspaceForm(prev => ({
-      ...prev, tags: [...(prev.tags || []), { id: generateId(), label: newTagForm.label, color: newTagForm.color }]
-    }));
-    setNewTagForm({ label: '', color: 'indigo' });
-  };
-
-  const handleRemoveTagFromWorkspace = (tagId) => {
-    setEditingWorkspaceForm(prev => ({ ...prev, tags: prev.tags.filter(t => t.id !== tagId) }));
-  };
 
   // Funções de Colunas
   const changeColumnColor = (colId, colorKey) => {
@@ -1284,7 +1253,7 @@ const App = () => {
                         const isSelected = selectedAssignees.includes(u.id);
                         return (
                           <button key={u.id} onClick={() => toggleAssigneeFilter(u.id)} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border ${isSelected ? 'bg-indigo-500 text-white border-indigo-500 shadow-md' : (theme === 'dark' ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100')}`}>
-                            {u.avatar ? <img src={u.avatar} className="w-5 h-5 rounded-full object-cover" /> : <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>{u.name.charAt(0)}</div>}
+                            {u.avatar ? <img src={u.avatar} alt={u.name} className="w-5 h-5 rounded-full object-cover" /> : <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>{u.name.charAt(0)}</div>}
                             {u.name.split(' ')[0]}
                           </button>
                         );
@@ -1707,7 +1676,7 @@ const App = () => {
                        return (
                          <div key={u.id} className="flex items-center gap-4">
                             {u.avatar ? (
-                              <img src={u.avatar} className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                              <img src={u.avatar} alt={u.name} className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-700 dark:text-slate-300">{u.name.charAt(0)}</div>
                             )}
@@ -1937,7 +1906,7 @@ const App = () => {
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all ${isSelected ? (theme === 'dark' ? 'bg-indigo-900/50 border border-indigo-700' : 'bg-indigo-50 border border-indigo-200') : (theme === 'dark' ? 'opacity-50 grayscale border border-transparent' : 'opacity-60 grayscale border border-transparent hover:opacity-100')}`}
                           >
                             {u.avatar ? (
-                              <img src={u.avatar} className="w-5 h-5 rounded-full object-cover" />
+                              <img src={u.avatar} alt={u.name} className="w-5 h-5 rounded-full object-cover" />
                             ) : (
                               <div className="w-5 h-5 rounded-full bg-slate-300 dark:bg-slate-700 flex items-center justify-center text-[8px] font-bold text-slate-700 dark:text-slate-300">{u.name.charAt(0)}</div>
                             )}
@@ -2077,7 +2046,7 @@ const App = () => {
                       return (
                         <div key={c.id} className={`p-4 rounded-2xl border ${theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-100'}`}>
                           <div className="flex items-center gap-2 mb-2">
-                            {u.avatar ? <img src={u.avatar} className="w-6 h-6 rounded-full object-cover" /> : <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{u.name.charAt(0)}</div>}
+                            {u.avatar ? <img src={u.avatar} alt={u.name} className="w-6 h-6 rounded-full object-cover" /> : <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{u.name.charAt(0)}</div>}
                             <span className={`text-xs font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>{u.name}</span>
                             <span className={`text-[9px] uppercase tracking-widest font-black ml-auto ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>{new Date(c.timestamp).toLocaleString('pt-BR')}</span>
                           </div>
@@ -2114,7 +2083,7 @@ const App = () => {
                                 return (
                                   <div key={reply.id} className="pl-3">
                                     <div className="flex items-center gap-2 mb-1">
-                                      {ru.avatar ? <img src={ru.avatar} className="w-5 h-5 rounded-full object-cover" /> : <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[8px] font-bold text-slate-700 dark:text-slate-300">{ru.name.charAt(0)}</div>}
+                                      {ru.avatar ? <img src={ru.avatar} alt={ru.name} className="w-5 h-5 rounded-full object-cover" /> : <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[8px] font-bold text-slate-700 dark:text-slate-300">{ru.name.charAt(0)}</div>}
                                       <span className={`text-xs font-bold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>{ru.name}</span>
                                       <span className={`text-[8px] uppercase tracking-widest font-black ml-auto ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>{new Date(reply.timestamp).toLocaleString('pt-BR')}</span>
                                     </div>
@@ -2183,7 +2152,7 @@ const App = () => {
                           <div className={`p-4 rounded-2xl border ${theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-100'}`}>
                             <div className="flex items-center gap-3 mb-2">
                               {u.avatar ? (
-                                <img src={u.avatar} className="w-6 h-6 rounded-full object-cover" />
+                                <img src={u.avatar} alt={u.name} className="w-6 h-6 rounded-full object-cover" />
                               ) : (
                                 <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{u.name.charAt(0)}</div>
                               )}
@@ -2291,7 +2260,7 @@ const App = () => {
                       return (
                         <div key={u.id} className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${isMember ? (theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200 shadow-sm') : (theme === 'dark' ? 'bg-slate-900/50 border-slate-800 opacity-60' : 'bg-slate-50 border-slate-100 opacity-60')}`}>
                           <div className="flex items-center gap-3">
-                            {u.avatar ? <img src={u.avatar} className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700" /> : <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold">{u.name.charAt(0)}</div>}
+                            {u.avatar ? <img src={u.avatar} alt={u.name} className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700" /> : <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold">{u.name.charAt(0)}</div>}
                             <div className="flex flex-col">
                               <span className={`text-sm font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>{u.name}</span>
                               <span className={`text-[9px] uppercase tracking-widest font-black ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>{u.email}</span>
@@ -2391,7 +2360,7 @@ const App = () => {
             <div className="flex flex-col items-center text-center gap-4">
               <div className="relative">
                  {messagingUser.avatar ? (
-                    <img src={messagingUser.avatar} className="w-20 h-20 rounded-full object-cover border-4 border-indigo-500" />
+                    <img src={messagingUser.avatar} alt={messagingUser.name} className="w-20 h-20 rounded-full object-cover border-4 border-indigo-500" />
                   ) : (
                     <div className="w-20 h-20 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-2xl font-bold text-indigo-600 border-4 border-indigo-500">{messagingUser.name.charAt(0)}</div>
                   )}
