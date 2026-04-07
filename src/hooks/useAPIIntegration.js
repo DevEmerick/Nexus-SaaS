@@ -1,10 +1,16 @@
 // Hook para chamar endpoints da API e sincronizar com a aplicação
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://nexus-saas-git-preview-devemericks-projects.vercel.app';
+
+// Use a URL dinâmica baseada na origem atual
+const getAPIBaseURL = () => {
+  // Em desenvolvimento local, pode ser http://localhost:3000
+  // Em produção, será o domínio Vercel atual
+  return typeof window !== 'undefined' ? window.location.origin : (process.env.REACT_APP_API_URL || '');
+};
 
 export const useAPIIntegration = () => {
   const login = async (email, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth`, {
+      const response = await fetch(`${getAPIBaseURL()}/api/auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -28,7 +34,7 @@ export const useAPIIntegration = () => {
 
   const register = async (email, name, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth`, {
+      const response = await fetch(`${getAPIBaseURL()}/api/auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -53,7 +59,7 @@ export const useAPIIntegration = () => {
 
   const fetchWorkspaces = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/listworkspaces`, {
+      const response = await fetch(`${getAPIBaseURL()}/api/listworkspaces`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -72,7 +78,7 @@ export const useAPIIntegration = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/listtasks`, {
+      const response = await fetch(`${getAPIBaseURL()}/api/listtasks`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -91,7 +97,7 @@ export const useAPIIntegration = () => {
 
   const fetchColumns = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/listcolumns`, {
+      const response = await fetch(`${getAPIBaseURL()}/api/listcolumns`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });

@@ -1,6 +1,11 @@
 import { generateId } from '../utils/helpers';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://nexus-saas-git-preview-devemericks-projects.vercel.app';
+// Use a URL dinâmica baseada na origem atual
+const getAPIBaseURL = () => {
+  // Em desenvolvimento local, pode ser http://localhost:3000
+  // Em produção, será o domínio Vercel atual
+  return typeof window !== 'undefined' ? window.location.origin : (process.env.REACT_APP_API_URL || '');
+};
 
 export const useAuthActions = (
   users, setUsers,
@@ -42,7 +47,7 @@ export const useAuthActions = (
     if (authView === 'login') {
       try {
         // Tentar login via API
-        const response = await fetch(`${API_BASE_URL}/api/auth`, {
+        const response = await fetch(`${getAPIBaseURL()}/api/auth`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -103,7 +108,7 @@ export const useAuthActions = (
 
       try {
         // Tentar register via API
-        const response = await fetch(`${API_BASE_URL}/api/auth`, {
+        const response = await fetch(`${getAPIBaseURL()}/api/auth`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
