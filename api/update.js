@@ -25,6 +25,7 @@ export default async function handler(req, res) {
     }
 
     let result;
+    let resultKey;
 
     switch (type) {
       case 'user':
@@ -38,6 +39,7 @@ export default async function handler(req, res) {
             ...(updateData.themePreference && { themePreference: updateData.themePreference }),
           },
         });
+        resultKey = 'user';
         break;
 
       case 'workspace':
@@ -49,6 +51,7 @@ export default async function handler(req, res) {
           },
           include: { user: true, columns: true },
         });
+        resultKey = 'workspace';
         break;
 
       case 'column':
@@ -61,6 +64,7 @@ export default async function handler(req, res) {
           },
           include: { workspace: true, tasks: true },
         });
+        resultKey = 'column';
         break;
 
       case 'task':
@@ -79,6 +83,7 @@ export default async function handler(req, res) {
           },
           include: { column: true },
         });
+        resultKey = 'task';
         break;
 
       default:
@@ -88,12 +93,14 @@ export default async function handler(req, res) {
         });
     }
 
-    return res.status(200).json({
+    const response = {
       success: true,
       message: `${type} updated successfully`,
-      data: result,
       timestamp: new Date().toISOString(),
-    });
+    };
+    response[resultKey] = result;
+
+    return res.status(200).json(response);
   } catch (error) {
     console.error('Error updating:', error);
     return res.status(500).json({

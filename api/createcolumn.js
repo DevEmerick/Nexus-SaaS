@@ -15,12 +15,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, workspaceId, position } = req.body;
+    const { title, color, workspaceId, position } = req.body;
 
-    if (!name || !workspaceId) {
+    if (!title || !workspaceId) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: name, workspaceId',
+        error: 'Missing required fields: title, workspaceId',
       });
     }
 
@@ -36,14 +36,19 @@ export default async function handler(req, res) {
     }
 
     const column = await prisma.column.create({
-      data: { name, workspaceId, position: position || 0 },
+      data: { 
+        title, 
+        color: color || '#3B82F6',
+        workspaceId, 
+        position: position || 0 
+      },
       include: { workspace: true, tasks: true },
     });
 
     return res.status(201).json({
       success: true,
       message: 'Column created successfully',
-      data: column,
+      column: column,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {

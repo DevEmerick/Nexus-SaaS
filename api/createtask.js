@@ -15,12 +15,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { title, columnId, description, priority, dueDate } = req.body;
+    const { title, columnId, workspaceId, description, priority, deadline, cardColor } = req.body;
 
-    if (!title || !columnId) {
+    if (!title || !columnId || !workspaceId) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: title, columnId',
+        error: 'Missing required fields: title, columnId, workspaceId',
       });
     }
 
@@ -39,17 +39,19 @@ export default async function handler(req, res) {
       data: {
         title,
         columnId,
+        workspaceId,
         description: description || null,
-        priority: priority || 'MEDIUM',
-        dueDate: dueDate ? new Date(dueDate) : null,
+        priority: priority || 'Média',
+        deadline: deadline ? new Date(deadline) : null,
+        cardColor: cardColor || 'slate',
       },
-      include: { column: true, comments: true },
+      include: { column: true },
     });
 
     return res.status(201).json({
       success: true,
       message: 'Task created successfully',
-      data: task,
+      task: task,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {

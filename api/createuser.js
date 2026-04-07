@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     return res.status(201).json({
       success: true,
       message: 'User created successfully',
-      data: { id: user.id, email: user.email, name: user.name },
+      user: { id: user.id, email: user.email, name: user.name },
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
