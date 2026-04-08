@@ -179,7 +179,21 @@ const App = () => {
             // Carregar tasks
             const apiTasks = await apiIntegration.fetchTasks();
             if (apiTasks && apiTasks.length > 0) {
-              setTasks(apiTasks);
+              // Garantir que subtasks têm formato correto
+              const sanitizedTasks = apiTasks.map(task => ({
+                ...task,
+                subtasks: Array.isArray(task.subtasks) 
+                  ? task.subtasks.map(st => ({
+                      id: st.id || '',
+                      text: st.text || '',
+                      completed: Boolean(st.completed) // Garante boolean
+                    }))
+                  : []
+              }));
+              setTasks(sanitizedTasks);
+              
+              // Limpar localStorage para garantir sincronização apenas com API
+              localStorage.removeItem('nexus_kanban_tasks');
             }
           }
         } catch (error) {

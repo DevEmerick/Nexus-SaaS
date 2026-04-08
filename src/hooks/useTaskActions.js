@@ -122,6 +122,16 @@ export const useTaskActions = (
         }
       }
 
+      // Sanitizar subtasks para garantir que tem formato correto
+      let sanitizedSubtasks = [];
+      if (Array.isArray(task.subtasks)) {
+        sanitizedSubtasks = task.subtasks.map(st => ({
+          id: st.id || '',
+          text: st.text || '',
+          completed: Boolean(st.completed) // Garante boolean value
+        }));
+      }
+
       setEditingTaskId(task.id);
       setTaskForm({
         title: task.title,
@@ -130,7 +140,7 @@ export const useTaskActions = (
         status: task.status || task.columnId || columnId || 'todo',
         cardColor: task.cardColor || 'slate',
         deadline: formattedDeadline,
-        subtasks: Array.isArray(task.subtasks) ? [...task.subtasks] : [],
+        subtasks: sanitizedSubtasks,
         completionComment: task.completionComment || '',
         assignees: task.assignees || [],
         comments: task.comments || [],
