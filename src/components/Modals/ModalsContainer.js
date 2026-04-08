@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Send, AlertTriangle, AlertCircle, MessageSquare, PartyPopper, Search, CheckCircle2, Layout, Clock, Palette, Plus, PlusCircle, ShieldCheck, Trash2 } from 'lucide-react';
 import { PALETTE, COLOR_KEYS } from '../../utils/constants';
 import { generateId } from '../../utils/helpers';
@@ -29,6 +29,27 @@ const ModalsContainer = ({
   holidayDetail, setHolidayDetail,
   isSearchOpen, setIsSearchOpen, searchQuery, setSearchQuery, searchResults, handleOpenModal
 }) => {
+  const [deleteSubtaskConfirmation, setDeleteSubtaskConfirmation] = useState({
+    isOpen: false,
+    subtaskId: null,
+    subtaskText: ''
+  });
+
+  const handleOpenDeleteSubtaskConfirmation = (id, text) => {
+    setDeleteSubtaskConfirmation({
+      isOpen: true,
+      subtaskId: id,
+      subtaskText: text
+    });
+  };
+
+  const handleConfirmDeleteSubtask = () => {
+    if (deleteSubtaskConfirmation.subtaskId) {
+      handleDeleteSubtask(deleteSubtaskConfirmation.subtaskId);
+      setDeleteSubtaskConfirmation({ isOpen: false, subtaskId: null, subtaskText: '' });
+    }
+  };
+
   return (
     <>
       {/* --- MODAL PERFIL --- */}
@@ -201,7 +222,7 @@ const ModalsContainer = ({
                             </div>
                             <span className={`font-bold text-xs truncate transition-all ${st.completed ? 'line-through decoration-2' : ''} ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>{st.text}</span>
                           </div>
-                          <button type="button" onClick={() => handleDeleteSubtask(st.id)} className={`flex-shrink-0 p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${theme === 'dark' ? 'hover:bg-red-900/40 text-red-400' : 'hover:bg-red-50 text-red-600'}`} title="Remover checklist">
+                          <button type="button" onClick={() => handleOpenDeleteSubtaskConfirmation(st.id, st.text)} className={`flex-shrink-0 p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${theme === 'dark' ? 'hover:bg-red-900/40 text-red-400' : 'hover:bg-red-50 text-red-600'}`} title="Remover checklist">
                             <Trash2 size={14} strokeWidth={2.5} />
                           </button>
                         </div>
@@ -645,6 +666,40 @@ const ModalsContainer = ({
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- MODAL CONFIRMAÇÃO DELETAR SUBTAREFA --- */}
+      {deleteSubtaskConfirmation.isOpen && (
+        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-2xl z-[70] flex items-center justify-center p-4">
+          <div className={`rounded-[2rem] w-full max-w-sm flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 border ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-white/20'}`}>
+            <div className={`px-8 py-6 border-b shrink-0 flex justify-between items-center transition-colors ${theme === 'dark' ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-100'}`}>
+              <div className="flex items-center gap-3">
+                <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-red-900/30 text-red-400' : 'bg-red-50 text-red-600'}`}>
+                  <AlertTriangle size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-black tracking-tighter">Remover Checklist?</h2>
+                  <p className={`${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'} text-xs font-bold uppercase tracking-widest mt-1`}>Esta ação não pode ser desfeita</p>
+                </div>
+              </div>
+              <button onClick={() => setDeleteSubtaskConfirmation({ isOpen: false, subtaskId: null, subtaskText: '' })} className={`p-3 rounded-xl border transition-all hover:rotate-90 shadow-sm ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-100' : 'bg-white border-slate-200 text-slate-400 hover:text-slate-800'}`}><X size={20} /></button>
+            </div>
+            <div className="p-8 space-y-4">
+              <div className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50/50 border-slate-100'}`}>
+                <p className={`text-sm font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>{deleteSubtaskConfirmation.subtaskText}</p>
+              </div>
+              <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>Tem certeza que deseja remover este item do checklist? Ele será deletado permanentemente quando você salvar o card.</p>
+            </div>
+            <div className="p-8 pt-0 flex gap-3">
+              <button onClick={() => setDeleteSubtaskConfirmation({ isOpen: false, subtaskId: null, subtaskText: '' })} className={`flex-1 px-6 py-3 rounded-[1rem] font-bold text-sm uppercase tracking-widest transition-all active:scale-95 border ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50'}`}>
+                Cancelar
+              </button>
+              <button onClick={handleConfirmDeleteSubtask} className="flex-1 px-6 py-3 rounded-[1rem] font-bold text-sm uppercase tracking-widest transition-all active:scale-95 bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-900/30">
+                Deletar
+              </button>
             </div>
           </div>
         </div>
