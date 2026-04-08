@@ -49,7 +49,15 @@ const CalendarView = ({
                     {holiday && <button onClick={() => setHolidayDetail(holiday)} className={`transition-colors p-1.5 rounded-xl ${theme === 'dark' ? 'text-indigo-400 bg-indigo-900/30' : 'text-indigo-400 bg-indigo-50'}`}><Info size={16} strokeWidth={2.5} /></button>}
                   </div>
                   <div className="space-y-2 overflow-y-auto max-h-[100px] custom-scrollbar pr-1">
-                    {processedTasks.filter(t => t.deadline === item.date).map(t => {
+                    {processedTasks.filter(t => {
+                      // Converter deadline para formato YYYY-MM-DD para comparação
+                      let taskDeadlineDate = t.deadline;
+                      if (t.deadline && typeof t.deadline === 'string' && t.deadline.includes('T')) {
+                        // Se for ISO string, pega só a data
+                        taskDeadlineDate = t.deadline.split('T')[0];
+                      }
+                      return taskDeadlineDate === item.date;
+                    }).map(t => {
                       const isOverdue = checkIsOverdue(t.deadline) && t.status !== 'done';
                       const completedLog = t.completedAt ? `Encerrado em: ${new Date(t.completedAt).toLocaleDateString('pt-BR')}` : '';
                       return (
