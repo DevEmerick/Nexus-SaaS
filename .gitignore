@@ -42,3 +42,15 @@ prisma/generated/
 # Documentation (keep local only, never track)
 /*.md
 docs/
+
+# Next.js artifacts (if Next.js is used)
+.next/
+out/
+next-env.d.ts
+
+# Build/Config files that are auto-generated
+eslint.config.mjs
+next.config.ts
+postcss.config.mjs
+tsconfig.json
+app/

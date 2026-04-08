@@ -37,7 +37,16 @@ export default async function handler(req, res) {
       data: { 
         title, 
         userId, 
-        color: color || '#3B82F6'
+        color: color || '#3B82F6',
+        columns: {
+          createMany: {
+            data: [
+              { title: 'Análise', color: '#ef4444', position: 0 },
+              { title: 'Em Progresso', color: '#f59e0b', position: 1 },
+              { title: 'Finalizado', color: '#10b981', position: 2 }
+            ]
+          }
+        }
       },
       include: { user: true, columns: true },
     });
