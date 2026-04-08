@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { title, columnId, workspaceId, description, priority, deadline, cardColor } = req.body;
+    const { title, columnId, workspaceId, description, priority, deadline, cardColor, subtasks } = req.body;
 
     if (!title || !columnId || !workspaceId) {
       return res.status(400).json({
@@ -44,6 +44,7 @@ export default async function handler(req, res) {
         priority: priority || 'Média',
         deadline: deadline ? new Date(deadline) : null,
         cardColor: cardColor || 'slate',
+        subtasks: subtasks || [],
       },
       include: { column: true },
     });

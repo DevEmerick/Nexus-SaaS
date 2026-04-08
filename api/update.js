@@ -80,6 +80,7 @@ export default async function handler(req, res) {
             ...(updateData.completionComment !== undefined && { completionComment: updateData.completionComment }),
             ...(updateData.assignedTo !== undefined && { assignedTo: updateData.assignedTo }),
             ...(updateData.tags !== undefined && { tags: updateData.tags }),
+            ...(updateData.subtasks !== undefined && { subtasks: updateData.subtasks }),
           },
           include: { column: true },
         });

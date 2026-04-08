@@ -24,17 +24,31 @@ export const useTaskActions = (
 
     try {
       if (editingTaskId) {
-        // TODO: Atualizar no servidor via API
-        setTasks(prev => prev.map(t => 
-          t.id === editingTaskId
-            ? {
-                ...t,
-                ...taskForm,
-                workspaceId: activeWorkspaceId,
-                history: [...(t.history || []), createLog('UPDATE', `Atualizou o card: "${taskForm.title}"`)]
-              }
-            : t
-        ));
+        // Atualizar via API
+        const response = await fetch(`${window.location.origin}/api/update`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'task',
+            id: editingTaskId,
+            title: taskForm.title,
+            description: taskForm.description || '',
+            columnId: taskForm.status, // status contém o columnId
+            priority: taskForm.priority || 'Média',
+            deadline: taskForm.deadline || null,
+            cardColor: taskForm.cardColor || 'slate',
+            completionComment: taskForm.completionComment || '',
+            subtasks: taskForm.subtasks || []
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`API Error: ${errorData.error || 'Erro ao atualizar tarefa'}`);
+        }
+
+        const { task } = await response.json();
+        setTasks(prev => prev.map(t => t.id === editingTaskId ? task : t));
       } else {
         // Criar novo na API
         const response = await fetch(`${window.location.origin}/api/createtask`, {
@@ -48,8 +62,7 @@ export const useTaskActions = (
             priority: taskForm.priority || 'Média',
             deadline: taskForm.deadline || null,
             cardColor: taskForm.cardColor || 'slate',
-            assignedTo: taskForm.assignedTo || '',
-            tags: taskForm.tags || ''
+            subtasks: taskForm.subtasks || []
           })
         });
 

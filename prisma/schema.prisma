@@ -68,6 +68,7 @@ model Task {
   completionComment String?
   assignedTo  String?
   tags        String   @default("")
+  subtasks    Json     @default("[]")
   
   deletedAt   DateTime?
   createdAt   DateTime @default(now())
