@@ -183,6 +183,19 @@ export const useTaskActions = (
     });
   };
 
+  const handleDeleteSubtask = (id) => {
+    setTaskForm(prev => {
+      const subtask = (prev.subtasks || []).find(st => st.id === id);
+      if (!subtask) return prev;
+      const log = createLog('DELETE', `Removeu a subtarefa: "${subtask.text}"`);
+      return {
+        ...prev,
+        subtasks: (prev.subtasks || []).filter(st => st.id !== id),
+        history: [...(prev.history || []), log]
+      };
+    });
+  };
+
   const toggleAssignee = (userId) => {
     setTaskForm(prev => {
       const assignees = prev.assignees || [];
@@ -211,6 +224,7 @@ export const useTaskActions = (
     handleOpenModal,
     handleAddSubtask,
     handleToggleSubtask,
+    handleDeleteSubtask,
     toggleAssignee,
     toggleTaskTag
   };

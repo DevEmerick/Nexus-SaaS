@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Send, AlertTriangle, AlertCircle, MessageSquare, PartyPopper, Search, CheckCircle2, Layout, Clock, Palette, Plus, PlusCircle, ShieldCheck } from 'lucide-react';
+import { X, Send, AlertTriangle, AlertCircle, MessageSquare, PartyPopper, Search, CheckCircle2, Layout, Clock, Palette, Plus, PlusCircle, ShieldCheck, Trash2 } from 'lucide-react';
 import { PALETTE, COLOR_KEYS } from '../../utils/constants';
 import { generateId } from '../../utils/helpers';
 import MarkdownEditor from '../Shared/MarkdownEditor';
@@ -11,7 +11,7 @@ const ModalsContainer = ({
   // Task Modal
   isModalOpen, setIsModalOpen, editingTaskId, taskForm, setTaskForm, taskModalTab, setTaskModalTab, 
   users, activeWorkspace, toggleAssignee, toggleTaskTag, subtaskInput, setSubtaskInput, 
-  handleAddSubtask, handleToggleSubtask, reverseHistory, handleSaveTask, handleAddComment, commentInput, 
+  handleAddSubtask, handleToggleSubtask, handleDeleteSubtask, reverseHistory, handleSaveTask, handleAddComment, commentInput, 
   setCommentInput, editingCommentId, setEditingCommentId, editingCommentText, setEditingCommentText, 
   handleSaveEditComment, setReplyingToId, replyingToId, replyText, setReplyText, handleAddReply, 
   handleDeleteComment, handleDeleteReply,
@@ -201,6 +201,9 @@ const ModalsContainer = ({
                             </div>
                             <span className={`font-bold text-xs truncate transition-all ${st.completed ? 'line-through decoration-2' : ''} ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>{st.text}</span>
                           </div>
+                          <button type="button" onClick={() => handleDeleteSubtask(st.id)} className={`flex-shrink-0 p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${theme === 'dark' ? 'hover:bg-red-900/40 text-red-400' : 'hover:bg-red-50 text-red-600'}`} title="Remover checklist">
+                            <Trash2 size={14} strokeWidth={2.5} />
+                          </button>
                         </div>
                       ))}
                     </div>
