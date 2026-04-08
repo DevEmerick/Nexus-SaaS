@@ -22,56 +22,76 @@ export const useTaskActions = (
     e.preventDefault();
     if (!taskForm.title.trim() || !activeWorkspaceId) return;
 
-    try {
-      if (editingTaskId) {
-        // Atualizar via API
-        const response = await fetch(`${window.location.origin}/api/update`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'task',
-            id: editingTaskId,
-            title: taskForm.title,
-            description: taskForm.description || '',
-            columnId: taskForm.status, // status contém o columnId
-            priority: taskForm.priority || 'Média',
-            deadline: taskForm.deadline || null,
-            cardColor: taskForm.cardColor || 'slate',
-            completionComment: taskForm.completionComment || '',
-            subtasks: taskForm.subtasks || []
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`API Error: ${errorData.error || 'Erro ao atualizar tarefa'}`);
+    const makeRequest = async (isEditing) => {
+      const endpoint = isEditing ? '/api/update' : '/api/createtask';
+      const method = isEditing ? 'PUT' : 'POST';
+      const body = isEditing ? 
+        {
+          type: 'task',
+          id: editingTaskId,
+          title: taskForm.title,
+          description: taskForm.description || '',
+          columnId: taskForm.status,
+          priority: taskForm.priority || 'Média',
+          deadline: taskForm.deadline || null,
+          cardColor: taskForm.cardColor || 'slate',
+          completionComment: taskForm.completionComment || '',
+          subtasks: taskForm.subtasks || []
         }
+        :
+        {
+          title: taskForm.title,
+          description: taskForm.description || '',
+          workspaceId: activeWorkspaceId,
+          columnId: taskForm.status,
+          priority: taskForm.priority || 'Média',
+          deadline: taskForm.deadline || null,
+          cardColor: taskForm.cardColor || 'slate',
+          subtasks: taskForm.subtasks || []
+        };
 
-        const { task } = await response.json();
+      return fetch(`${window.location.origin}${endpoint}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+    };
+
+    try {
+      let response;
+      let retries = 0;
+      const maxRetries = 2;
+
+      // Retry logic for connection errors
+      while (retries <= maxRetries) {
+        response = await makeRequest(!!editingTaskId);
+        
+        if (response.ok) break;
+        
+        // Check if it's a retryable error
+        if (response.status === 503) {
+          retries++;
+          if (retries <= maxRetries) {
+            const delay = 1000 * Math.pow(2, retries - 1); // 1s, 2s
+            console.log(`Conexão instável, tentando novamente em ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+        }
+        break;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMsg = errorData.error || (editingTaskId ? 'Erro ao atualizar tarefa' : 'Erro ao criar tarefa');
+        throw new Error(errorMsg);
+      }
+
+      const { task } = await response.json();
+      
+      if (editingTaskId) {
         setTasks(prev => prev.map(t => t.id === editingTaskId ? task : t));
       } else {
-        // Criar novo na API
-        const response = await fetch(`${window.location.origin}/api/createtask`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: taskForm.title,
-            description: taskForm.description || '',
-            workspaceId: activeWorkspaceId,
-            columnId: taskForm.status, // status contém o columnId
-            priority: taskForm.priority || 'Média',
-            deadline: taskForm.deadline || null,
-            cardColor: taskForm.cardColor || 'slate',
-            subtasks: taskForm.subtasks || []
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`API Error: ${errorData.error || 'Erro ao criar tarefa'}`);
-        }
-
-        const { task } = await response.json();
         setTasks(prev => [...prev, task]);
       }
 
