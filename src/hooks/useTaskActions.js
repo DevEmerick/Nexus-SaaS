@@ -111,15 +111,26 @@ export const useTaskActions = (
 
   const handleOpenModal = (task = null, columnId = null) => {
     if (task) {
+      // Converter ISO string de deadline para formato YYYY-MM-DD para o input type="date"
+      let formattedDeadline = new Date().toISOString().split('T')[0];
+      if (task.deadline) {
+        // Se deadline vem como string ISO, pega a parte da data
+        if (typeof task.deadline === 'string') {
+          formattedDeadline = task.deadline.split('T')[0];
+        } else if (task.deadline instanceof Date) {
+          formattedDeadline = task.deadline.toISOString().split('T')[0];
+        }
+      }
+
       setEditingTaskId(task.id);
       setTaskForm({
         title: task.title,
         description: task.description || '',
         priority: task.priority || 'Média',
-        status: task.status || columnId || 'todo',
+        status: task.status || task.columnId || columnId || 'todo',
         cardColor: task.cardColor || 'slate',
-        deadline: task.deadline || new Date().toISOString().split('T')[0],
-        subtasks: task.subtasks || [],
+        deadline: formattedDeadline,
+        subtasks: Array.isArray(task.subtasks) ? [...task.subtasks] : [],
         completionComment: task.completionComment || '',
         assignees: task.assignees || [],
         comments: task.comments || [],
