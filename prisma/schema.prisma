@@ -69,6 +69,7 @@ model Task {
   assignedTo  String?
   tags        String   @default("")
   subtasks    Json     @default("[]")
+  comments    Json     @default("[]")
   
   deletedAt   DateTime?
   createdAt   DateTime @default(now())
