@@ -36,7 +36,8 @@ export const useTaskActions = (
           deadline: taskForm.deadline || null,
           cardColor: taskForm.cardColor || 'slate',
           completionComment: taskForm.completionComment || '',
-          subtasks: taskForm.subtasks || []
+          subtasks: taskForm.subtasks || [],
+          comments: taskForm.comments || []
         }
         :
         {

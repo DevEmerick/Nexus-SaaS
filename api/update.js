@@ -104,6 +104,7 @@ export default async function handler(req, res) {
               ...(updateData.assignedTo !== undefined && { assignedTo: updateData.assignedTo }),
               ...(updateData.tags !== undefined && { tags: updateData.tags }),
               ...(updateData.subtasks !== undefined && { subtasks: updateData.subtasks }),
+              ...(updateData.comments !== undefined && { comments: updateData.comments }),
             },
             include: { column: true },
           });
