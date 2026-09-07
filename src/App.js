@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 import { DEFAULT_COLUMNS } from './utils/constants';
 import { generateId } from './utils/helpers';
@@ -454,6 +455,7 @@ const App = () => {
         holidayDetail={holidayDetail} setHolidayDetail={setHolidayDetail}
         isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchResults={searchResults} handleOpenModal={handleOpenModal}
       />
+      <Analytics />
     </div>
   );
 };
